@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    /* Project Setup */
+    "target": "es2022",
+    "lib": ["dom", "esnext", "es2022"],
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "outDir": "./dist",
+    "sourceMap": true,
+    "removeComments": true,
+    "isolatedModules": true,
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+
+    /* Module Resolution */
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["api/src/*", "client/src/*"]
+    },
+
+    /* Linter Checks */
+    "strict": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    /* Experimental Options */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    /* Advanced Options */
+    "forceConsistentCasingInFileNames": true
+  },
+  "types": ["vitest/globals"],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "api/vite.config.ts",
+    "client/vitest.config.ts",
+    "vitest.config.mts",
+    "vitest.workspace.mts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules/*",
+    "**/dist/*",
+    "./client/cypress.config.ts"
+  ]
+}
