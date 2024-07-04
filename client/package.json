@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "tsc -p tsconfig.prod.json && vite build",
     "preview": "vite preview",
     "test": "vitest run",
@@ -20,7 +20,7 @@
     "react-router-dom": "^6.24.1"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^1.6.0",
+    "@chromatic-com/storybook": "^1.6.1",
     "@mdx-js/react": "^3.0.1",
     "@storybook/addon-actions": "^8.1.11",
     "@storybook/addon-docs": "^8.1.11",

@@ -5,8 +5,7 @@
 
 # Build dependencies
 .vscode
-dist
-logs
+dist.do
 /node_modules
 
 # code formatter
@@ -19,6 +18,8 @@ logs
 README.md
 
 # test
+.storybook
+cypress
 coverage
 vitest.config.js
 

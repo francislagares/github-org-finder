@@ -35,7 +35,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # MongoDB replica sets
-mongodb_cluster
+mongodb
 
 # Redis Volumes
 redis_data
