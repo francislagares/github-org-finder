@@ -6,8 +6,8 @@
   "author": "Francis Lagares",
   "license": "MIT",
   "scripts": {
-    "start:dev": "pnpm tsx watch src/server.ts",
-    "start": "pnpm build && node dist/server.js",
+    "start:dev": "pnpm tsx watch --env-file=.env.development.local src/app/index.ts",
+    "start": "pnpm build && node dist/src/index.js",
     "build": "tsc && tsc-alias",
     "deploy:clean": "pm2 stop all && pm2 delete all",
     "deploy:dev": "pm2 start ecosystem.config.js --only dev && pm2 logs all",
@@ -30,7 +30,8 @@
     "ioredis": "^5.3.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^8.4.4",
-    "winston": "^3.9.0"
+    "winston": "^3.9.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

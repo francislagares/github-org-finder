@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 import logger from '@/utils/logger';
 
-import { DATABASE_URL } from './environment';
+import { serverSchema } from '@/config/environment';
 
 export class MongoDBInstance {
   private static instance: MongoDBInstance;
@@ -22,7 +22,7 @@ export class MongoDBInstance {
     try {
       if (mongoose.connection.readyState === 0) {
         // checks if mongoose is not connected
-        await mongoose.connect(DATABASE_URL as string);
+        await mongoose.connect(serverSchema.DATABASE_URL);
         logger.info('Successfully connected to database!');
       }
     } catch (error) {
