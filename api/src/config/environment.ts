@@ -7,7 +7,8 @@ const envSchema = z.object({
     .refine(
       host => host.startsWith('http') || host.startsWith('https'),
       'Invalid URL format',
-    ),
+    )
+    .default('http://localhost:4000'),
   PORT: z.coerce
     .number({
       description:
@@ -21,14 +22,15 @@ const envSchema = z.object({
     .string()
     .url()
     .trim()
-    .refine(url => url.startsWith('mongodb://'), 'Invalid Database URL format'),
+    .refine(url => url.startsWith('mongodb://'), 'Invalid Database URL format')
+    .default('mongodb://mongodb:27017/'),
   GITHUB_API_URL: z
     .string()
     .url()
     .trim()
     .refine(url => url.startsWith('https://'), 'Invalid Github URL format')
     .default('https://api.github.com'),
-  GITHUB_SECRET: z.string().trim().min(1),
+  GITHUB_SECRET: z.string().trim().default(''),
   LOG_DIR: z.string().optional(),
   CLIENT_URL: z
     .string()
@@ -37,7 +39,7 @@ const envSchema = z.object({
     .refine(url => url.startsWith('http://'), 'Invalid client URL format')
     .default('http://localhost:5173/'),
   CORS_ORIGIN: z.string().trim().min(1).default('*'),
-  CORS_CREDENTIALS: z.boolean().default(true),
+  CORS_CREDENTIALS: z.coerce.boolean().default(true),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
     .default('development'),
