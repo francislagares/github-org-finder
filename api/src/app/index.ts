@@ -2,7 +2,7 @@ import express from 'express';
 
 import logger from '@/utils/logger';
 
-import { Server } from '@/server';
+import { Server } from '@/presentation/server';
 
 export class App {
   public init() {

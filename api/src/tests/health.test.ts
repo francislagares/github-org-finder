@@ -2,9 +2,8 @@ import express, { Application } from 'express';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 
-import HealthController from '@/controllers/health.controller';
-
-import { Server } from '@/server';
+import HealthController from '@/presentation/controllers/health/health.controller';
+import { Server } from '@/presentation/server';
 
 describe('HealthController', () => {
   let app: Application;

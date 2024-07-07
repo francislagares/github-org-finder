@@ -14,7 +14,7 @@ import logger from '@/utils/logger';
 import { MongoDBInstance as dbConnection } from '@/config/database';
 import { serverSchema } from '@/config/environment';
 
-import applicationRoutes from '@/routes/index';
+import applicationRoutes from '@/presentation/routes/index';
 
 export class Server {
   private readonly app: Application;
