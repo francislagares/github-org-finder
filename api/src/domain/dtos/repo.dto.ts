@@ -4,6 +4,7 @@ export class RepoDto {
     public readonly name: string,
     public readonly url: string,
     public readonly branches: number,
+    public readonly language: string,
     public readonly isChecked: boolean,
   ) {}
 }

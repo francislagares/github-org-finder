@@ -1,5 +1,7 @@
 import express, { Router } from 'express';
 
+import { GithubApiDatasource } from '@/infrastructure/datasources/github.datasource';
+import { GithubRepositoryImpl } from '@/infrastructure/repositories/github.repository.impl';
 import ReposController from '@/presentation/controllers/repos/repos.controller';
 
 export class ReposRoutes {
@@ -10,9 +12,11 @@ export class ReposRoutes {
   }
 
   public getRoutes(): Router {
-    const controller = new ReposController();
+    const githubApiDatasource = new GithubApiDatasource();
+    const githubRepository = new GithubRepositoryImpl(githubApiDatasource);
+    const controller = new ReposController(githubRepository);
 
-    this.router.get('/repos/', controller.getReposByOrgName);
+    this.router.get('/orgs/:orgName/repos', controller.getReposByOrgName);
 
     return this.router;
   }
