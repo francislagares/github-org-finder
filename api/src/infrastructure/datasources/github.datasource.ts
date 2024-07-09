@@ -2,11 +2,11 @@ import axios from 'axios';
 
 import { serverSchema } from '@/config/environment';
 
-import { CustomError, RepoDatasource, RepoDto } from '@/domain';
+import { CustomError, RepoDto } from '@/domain';
 import { Repo } from '@/domain/entities/repo';
-import { RepoMapper } from '@/infrastructure/';
+import { GithubApiInterface, RepoMapper } from '@/infrastructure/';
 
-export class GithubApiDatasource implements RepoDatasource {
+export class GithubApiDatasource implements GithubApiInterface {
   private mapper = new RepoMapper();
 
   private async getBranchesCount(

@@ -3,3 +3,4 @@ export * from './dtos/repo.dto';
 export * from './entities/repo';
 export * from './errors/custom-errors';
 export * from './repositories/repo.repository';
+export * from './usecases/save-repo.usecase';

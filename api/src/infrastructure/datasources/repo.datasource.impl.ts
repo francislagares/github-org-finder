@@ -1,40 +1,15 @@
-import axios from 'axios';
-
-import { serverSchema } from '@/config/environment';
-
 import { RepoModel } from '@/data/mongodb/models/repo.model';
 import { CustomError, Repo, RepoDatasource, RepoDto } from '@/domain';
 
+import { RepoMapper } from '../mappers/repo.mapper';
+
 export class RepoDatasourceImpl implements RepoDatasource {
-  async fetchByOrgName(orgName: string): Promise<Repo[]> {
+  private mapper = new RepoMapper();
+
+  public async saveRepo(repoDto: RepoDto): Promise<Repo> {
+    const { name, url, branches, language, isChecked } = repoDto;
     try {
-      const response = await axios.get<Repo[]>(
-        `${serverSchema.GITHUB_API_URL}/orgs/${orgName}/repos`,
-        {
-          headers: {
-            Authorization: `token ${serverSchema.GITHUB_SECRET}`,
-          },
-          params: {
-            per_page: 10,
-          },
-        },
-      );
-
-      const repos = response.data;
-
-      return repos;
-    } catch (error) {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw CustomError.internalServer();
-    }
-  }
-
-  async save(repoDto: RepoDto): Promise<Repo> {
-    const { id, name, url, branches, language, isChecked } = repoDto;
-    try {
-      const repoExists = await RepoModel.findById(id);
+      const repoExists = await RepoModel.findOne();
 
       if (repoExists) throw CustomError.badRequest('Repo already exists.');
 
@@ -48,7 +23,14 @@ export class RepoDatasourceImpl implements RepoDatasource {
 
       await repo.save();
 
-      return new Repo(repo.id, name, url, branches, language, isChecked);
+      return this.mapper.toDomain({
+        id: repo.id,
+        name: repo.name,
+        url: repo.url,
+        branches: repo.branches,
+        language: repo.language,
+        isChecked: repo.isChecked,
+      });
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;
