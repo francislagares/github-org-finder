@@ -2,10 +2,28 @@ import axios from 'axios';
 
 import { serverSchema } from '@/config/environment';
 
-import { CustomError, RepoDatasource } from '@/domain';
+import { CustomError, RepoDatasource, RepoDto } from '@/domain';
 import { Repo } from '@/domain/entities/repo';
+import { RepoMapper } from '@/infrastructure/';
 
 export class GithubApiDatasource implements RepoDatasource {
+  private mapper = new RepoMapper();
+
+  private async getBranchesCount(
+    orgName: string,
+    repoName: string,
+  ): Promise<number> {
+    const response = await axios.get(
+      `${serverSchema.GITHUB_API_URL}/repos/${orgName}/${repoName}/branches`,
+      {
+        headers: {
+          Authorization: `token ${serverSchema.GITHUB_SECRET}`,
+        },
+      },
+    );
+    return response.data.length;
+  }
+
   public async fetchByOrgName(orgName: string): Promise<Repo[]> {
     try {
       const response = await axios.get<Repo[]>(
@@ -20,9 +38,20 @@ export class GithubApiDatasource implements RepoDatasource {
         },
       );
 
-      const repos = response.data;
+      const reposData = response.data;
+      const repos = reposData.map(async (repoDto: RepoDto) => {
+        const branchesCount = await this.getBranchesCount(
+          orgName,
+          repoDto.name,
+        );
+        const repo = this.mapper.toDomain({
+          ...repoDto,
+          branches: branchesCount,
+        });
+        return repo;
+      });
 
-      return repos;
+      return Promise.all(repos);
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

@@ -1,7 +1,6 @@
 import express, { Router } from 'express';
 
-import { GithubApiDatasource } from '@/infrastructure/datasources/github.datasource';
-import { GithubRepositoryImpl } from '@/infrastructure/repositories/github.repository.impl';
+import { GithubApiDatasource, GithubRepositoryImpl } from '@/infrastructure';
 import ReposController from '@/presentation/controllers/repos/repos.controller';
 
 export class ReposRoutes {

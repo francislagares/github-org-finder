@@ -17,7 +17,7 @@ class ReposController {
 
       const repos = await this.repoRepository.fetchByOrgName(orgName);
 
-      res.status(200).json({ data: repos });
+      res.status(200).json({ repos });
 
       return repos;
     },
