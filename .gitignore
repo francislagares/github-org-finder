@@ -34,8 +34,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# MongoDB replica sets
-mongodb
-
 # Redis Volumes
 redis_data

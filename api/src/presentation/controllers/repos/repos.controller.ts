@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 
 import { asyncMiddleware } from '@/libs/shared/middlewares/async.middleware';
 
-import { Repo, RepoDto, RepoRepository, SaveRepoUseCase } from '@/domain';
+import { FetchReposUseCase, Repo, RepoDto, SaveRepoUseCase } from '@/domain';
 
 class ReposController {
   constructor(
-    private readonly repoRepository: RepoRepository,
+    private readonly fetchRepoUseCase: FetchReposUseCase,
     private readonly saveRepoUseCase: SaveRepoUseCase,
   ) {}
 
@@ -18,7 +18,7 @@ class ReposController {
         res.status(400).json({ error: 'Organization name is required' });
       }
 
-      const repos = await this.repoRepository.fetchByOrgName(orgName);
+      const repos = await this.fetchRepoUseCase.execute(orgName);
 
       res.status(200).json({ repos });
 

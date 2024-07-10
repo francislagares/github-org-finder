@@ -5,8 +5,6 @@ export class FetchReposUseCase {
   constructor(private repoRepository: RepoRepository) {}
 
   async execute(orgName: string): Promise<Repo[]> {
-    const repos = await this.repoRepository.fetchByOrgName(orgName);
-
-    return repos.map(repo => repo);
+    return await this.repoRepository.fetchByOrgName(orgName);
   }
 }
