@@ -10,6 +10,7 @@ services:
     env_file: .env.development.local
     depends_on:
       - mongodb
+      - redis
     networks:
       - mern
     ports:

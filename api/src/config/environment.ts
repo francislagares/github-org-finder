@@ -23,7 +23,23 @@ const envSchema = z.object({
     .url()
     .trim()
     .refine(url => url.startsWith('mongodb://'), 'Invalid Database URL format')
-    .default('mongodb://mongodb:27017/'),
+    .default('mongodb://localhost:27017/'),
+  REDIS_HOST: z.string().trim().default('localhost'),
+  REDIS_PORT: z.coerce
+    .number()
+    .positive()
+    .max(65536, `options.port should be >= 0 and < 65536`)
+    .default(6379),
+  REDIS_TTL: z.coerce
+    .number()
+    .positive()
+    .max(65536, `options.port should be >= 0 and < 65536`)
+    .default(30),
+  REDIS_TIMEOUT: z.coerce
+    .number()
+    .positive()
+    .max(65536, `options.port should be >= 0 and < 65536`)
+    .default(5000),
   GITHUB_API_URL: z
     .string()
     .url()

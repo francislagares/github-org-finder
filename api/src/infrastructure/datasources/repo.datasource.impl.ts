@@ -1,3 +1,5 @@
+import { CacheManager } from '@/libs/shared/redis/cache-manager';
+
 import { RepoModel } from '@/data/mongodb/models/repo.model';
 import { CustomError, Repo, RepoDatasource, RepoDto } from '@/domain';
 import { RepoMapper } from '@/infrastructure/mappers/repo.mapper';
@@ -5,8 +7,13 @@ import { RepoMapper } from '@/infrastructure/mappers/repo.mapper';
 import { GithubApiDatasourceImpl } from './github.datasource.impl';
 
 export class RepoDatasourceImpl implements RepoDatasource {
+  private readonly redis: CacheManager;
   private githubApiDatasource = new GithubApiDatasourceImpl();
   private mapper = new RepoMapper();
+
+  constructor() {
+    this.redis = new CacheManager();
+  }
 
   public async saveRepo(repoDto: RepoDto): Promise<Repo> {
     const { id, name, url, branches, language, isChecked } = repoDto;
@@ -44,6 +51,13 @@ export class RepoDatasourceImpl implements RepoDatasource {
 
   public async fetchByOrgName(orgName: string): Promise<Repo[]> {
     try {
+      const cacheKey = 'fetchByOrgName/repos';
+      const cachedValue = await this.redis.getCache(cacheKey);
+
+      if (cachedValue) {
+        return JSON.parse(cachedValue);
+      }
+
       const githubRepos =
         await this.githubApiDatasource.fetchByOrgName(orgName);
       const savedRepos = await RepoModel.find({ isChecked: true });
@@ -83,6 +97,8 @@ export class RepoDatasourceImpl implements RepoDatasource {
           );
         }
       });
+
+      await this.redis.setCache(cacheKey, combinedRepos);
 
       return combinedRepos;
     } catch (error) {
