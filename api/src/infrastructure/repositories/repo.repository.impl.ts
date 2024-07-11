@@ -1,13 +1,19 @@
-import { Repo, RepoDatasource, RepoDto } from '@/domain';
+import { RepoDatasource } from '@/domain';
+import { Repo } from '@/domain/entities/repo';
+import { RepoRepository } from '@/domain/repositories/repo.repository';
 
-export class RepoRepositoryImpl {
-  constructor(private readonly repoDatasource: RepoDatasource) {}
+export class RepoRepositoryImpl implements RepoRepository {
+  constructor(private repoDatasource: RepoDatasource) {}
 
-  public async fetchByOrgName(orgName: string): Promise<Repo[]> {
-    return this.repoDatasource.fetchByOrgName(orgName);
+  async fetchByOrgName(
+    orgName: string,
+    page: number,
+    limit: number,
+  ): Promise<Repo[]> {
+    return await this.repoDatasource.fetchByOrgName(orgName, page, limit);
   }
 
-  public async saveRepo(repo: RepoDto): Promise<Repo> {
-    return this.repoDatasource.saveRepo(repo);
+  async saveRepo(repo: Repo): Promise<Repo> {
+    return await this.repoDatasource.saveRepo(repo);
   }
 }

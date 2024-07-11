@@ -24,16 +24,21 @@ export class GithubApiDatasourceImpl implements GithubApiInterface {
     return response.data.length;
   }
 
-  public async fetchByOrgName(orgName: string): Promise<Repo[]> {
+  public async fetchByOrgName(
+    orgName: string,
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<Repo[]> {
     try {
-      const response = await axios.get<Repo[]>(
+      const response = await axios.get<RepoDto[]>(
         `${serverSchema.GITHUB_API_URL}/orgs/${orgName}/repos`,
         {
           headers: {
             Authorization: `token ${serverSchema.GITHUB_SECRET}`,
           },
           params: {
-            per_page: 10,
+            page,
+            per_page: perPage,
           },
         },
       );
@@ -44,11 +49,10 @@ export class GithubApiDatasourceImpl implements GithubApiInterface {
           orgName,
           repoDto.name,
         );
-        const repo = this.mapper.toDTO({
+        return this.mapper.toDTO({
           ...repoDto,
           branches: branchesCount,
         });
-        return repo;
       });
 
       return Promise.all(repos);

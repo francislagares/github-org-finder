@@ -49,20 +49,31 @@ export class RepoDatasourceImpl implements RepoDatasource {
     }
   }
 
-  public async fetchByOrgName(orgName: string): Promise<Repo[]> {
+  public async fetchByOrgName(
+    orgName: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<Repo[]> {
     try {
-      const cacheKey = 'fetchByOrgName/repos';
+      const cacheKey = `fetchByOrgName/repos/${orgName}/${page}/${limit}`;
       const cachedValue = await this.redis.getCache(cacheKey);
 
       if (cachedValue) {
         return JSON.parse(cachedValue);
       }
 
-      const githubRepos =
-        await this.githubApiDatasource.fetchByOrgName(orgName);
+      // Fetch paginated repositories from GitHub API
+      const githubRepos = await this.githubApiDatasource.fetchByOrgName(
+        orgName,
+        page,
+        limit,
+      );
+
+      // Fetch all checked repositories from MongoDB
       const savedRepos = await RepoModel.find({ isChecked: true });
 
-      const savedReposMap = new Map( // Map() provides more efficient lookups O(1)
+      // Map() provides more efficient lookups O(1)
+      const savedReposMap = new Map(
         savedRepos.map(repo => [
           repo.githubId,
           this.mapper.toDTO({
@@ -76,6 +87,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
         ]),
       );
 
+      // Combine results, prioritizing saved repos
       const combinedRepos = githubRepos.map(repo => {
         if (savedReposMap.has(repo.id)) {
           return { ...repo, ...savedReposMap.get(repo.id) };
@@ -83,6 +95,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
         return repo;
       });
 
+      // Ensure no duplicates and include all saved repos
       savedRepos.forEach(repo => {
         if (!combinedRepos.some(r => r.id === repo.githubId)) {
           combinedRepos.push(

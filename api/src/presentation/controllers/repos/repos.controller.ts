@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 
 import { asyncMiddleware } from '@/libs/shared/middlewares/async.middleware';
 
-import { FetchReposUseCase, Repo, RepoDto, SaveRepoUseCase } from '@/domain';
+import { FetchReposUseCase, RepoDto, SaveRepoUseCase } from '@/domain';
 
 class ReposController {
   constructor(
@@ -11,18 +11,24 @@ class ReposController {
   ) {}
 
   public getReposByOrgName = asyncMiddleware(
-    async (req: Request, res: Response): Promise<Repo[]> => {
+    async (req: Request, res: Response): Promise<void> => {
       const { orgName } = req.params;
+      const { page, limit } = req.query;
+
+      const pageNum = parseInt(page as string, 10) || 1;
+      const perPageNum = parseInt(limit as string, 10) || 10;
 
       if (!orgName) {
         res.status(400).json({ error: 'Organization name is required' });
+        return;
       }
 
-      const repos = await this.fetchRepoUseCase.execute(orgName);
-
+      const repos = await this.fetchRepoUseCase.execute(
+        orgName,
+        pageNum,
+        perPageNum,
+      );
       res.status(200).json({ repos });
-
-      return repos;
     },
   );
 
@@ -36,7 +42,6 @@ class ReposController {
       }
 
       const savedRepo = await this.saveRepoUseCase.execute(repo);
-
       res.status(200).json({ savedRepo });
     },
   );
