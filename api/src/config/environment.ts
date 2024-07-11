@@ -8,7 +8,7 @@ const envSchema = z.object({
       host => host.startsWith('http') || host.startsWith('https'),
       'Invalid URL format',
     )
-    .default('http://localhost:4000'),
+    .default('http://localhost'),
   PORT: z.coerce
     .number({
       description:
@@ -16,7 +16,7 @@ const envSchema = z.object({
     })
     .positive()
     .max(65536, `options.port should be >= 0 and < 65536`)
-    .default(3000),
+    .default(4000),
   BASE_URL: z.string().trim().min(1).default('/api/v1'),
   DATABASE_URL: z
     .string()

@@ -45,10 +45,10 @@ export class Server {
     app.use(cookieParser());
     app.use(
       cors({
-        origin: serverSchema.CLIENT_URL,
+        origin: serverSchema.CORS_ORIGIN,
         credentials: serverSchema.CORS_CREDENTIALS,
         optionsSuccessStatus: 200,
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        methods: ['GET', 'POST'],
       }),
     );
   }

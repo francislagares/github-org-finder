@@ -6,7 +6,7 @@ import { CustomError, RepoDto } from '@/domain';
 import { Repo } from '@/domain/entities/repo';
 import { GithubApiInterface, RepoMapper } from '@/infrastructure/';
 
-export class GithubApiDatasource implements GithubApiInterface {
+export class GithubApiDatasourceImpl implements GithubApiInterface {
   private mapper = new RepoMapper();
 
   private async getBranchesCount(
@@ -44,7 +44,7 @@ export class GithubApiDatasource implements GithubApiInterface {
           orgName,
           repoDto.name,
         );
-        const repo = this.mapper.toDomain({
+        const repo = this.mapper.toDTO({
           ...repoDto,
           branches: branchesCount,
         });

@@ -2,10 +2,10 @@ import { RepoModel } from '@/data/mongodb/models/repo.model';
 import { CustomError, Repo, RepoDatasource, RepoDto } from '@/domain';
 import { RepoMapper } from '@/infrastructure/mappers/repo.mapper';
 
-import { GithubApiDatasource } from './github.datasource';
+import { GithubApiDatasourceImpl } from './github.datasource.impl';
 
 export class RepoDatasourceImpl implements RepoDatasource {
-  private githubApiDatasource = new GithubApiDatasource();
+  private githubApiDatasource = new GithubApiDatasourceImpl();
   private mapper = new RepoMapper();
 
   public async saveRepo(repoDto: RepoDto): Promise<Repo> {

@@ -5,6 +5,6 @@ export class RepoDto {
     public readonly url: string,
     public readonly branches: number,
     public readonly language: string,
-    public readonly isChecked: boolean,
+    public readonly isChecked: boolean = false,
   ) {}
 }
