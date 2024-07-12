@@ -6,6 +6,8 @@ import { RepoDto } from '@/domain/dtos/repo.dto';
 import { RepoDatasourceImpl } from '@/infrastructure/datasources/repo.datasource.impl';
 import { ReposRoutes } from '@/presentation/routes/repos/repos.router';
 
+import { mockData, mockDataSaved } from './mockData';
+
 describe('ReposRoutes', () => {
   let app: express.Application;
 
@@ -18,51 +20,32 @@ describe('ReposRoutes', () => {
     app.use(reposRoutes.getRoutes());
   });
 
-  it('should fetch repos by organization name', async () => {
-    const mockData = [
-      {
-        id: 2935646,
-        name: 'brackets-app',
-        url: 'https://api.github.com/repos/adobe/brackets-app',
-        branches: 6,
-        language: 'C++',
-        isChecked: true,
-      },
-      {
-        id: 2935735,
-        name: 'brackets',
-        url: 'https://api.github.com/repos/adobe/brackets',
-        branches: 30,
-        language: 'JavaScript',
-        isChecked: false,
-      },
-    ];
-
+  it('should fetch repos by organization name with pagination', async () => {
     const mockFetchByOrgName = vi
       .spyOn(RepoDatasourceImpl.prototype, 'fetchByOrgName')
-      .mockResolvedValue(mockData);
+      .mockImplementation((_orgName, pageNum) => {
+        if (pageNum === 1) {
+          return Promise.resolve(mockData);
+        }
 
-    const response = await request(app).get('/orgs/adobe/repos');
+        if (pageNum === 2) {
+          return Promise.resolve(mockData);
+        }
+
+        return Promise.resolve([]);
+      });
+
+    // Test page 1
+    let response = await request(app).get('/orgs/adobe/repos?page=1&limit=2');
 
     expect(response.status).toBe(200);
-    expect(response.body.repos).toEqual([
-      {
-        id: 2935646,
-        name: 'brackets-app',
-        url: 'https://api.github.com/repos/adobe/brackets-app',
-        branches: 6,
-        language: 'C++',
-        isChecked: true,
-      },
-      {
-        id: 2935735,
-        name: 'brackets',
-        url: 'https://api.github.com/repos/adobe/brackets',
-        branches: 30,
-        language: 'JavaScript',
-        isChecked: false,
-      },
-    ]);
+    expect(response.body.repos).toEqual(mockData);
+
+    // Test page 2
+    response = await request(app).get('/orgs/adobe/repos?page=2&limit=2');
+
+    expect(response.status).toBe(200);
+    expect(response.body.repos).toEqual(mockData);
 
     mockFetchByOrgName.mockRestore();
   });
@@ -70,35 +53,14 @@ describe('ReposRoutes', () => {
   it('should save a repo to the database', async () => {
     const mockSaveRepo = vi
       .spyOn(RepoDatasourceImpl.prototype, 'saveRepo')
-      .mockResolvedValue({
-        id: 2935646,
-        name: 'brackets-app',
-        url: 'https://api.github.com/repos/adobe/brackets-app',
-        branches: 6,
-        language: 'C++',
-        isChecked: true,
-      });
+      .mockResolvedValue(mockDataSaved);
 
     const response = await request(app)
       .post('/repos/save')
-      .send({
-        id: 2935646,
-        name: 'brackets-app',
-        url: 'https://api.github.com/repos/adobe/brackets-app',
-        branches: 6,
-        language: 'C++',
-        isChecked: true,
-      } as RepoDto);
+      .send(mockDataSaved as RepoDto);
 
     expect(response.status).toBe(200);
-    expect(response.body.savedRepo).toEqual({
-      id: 2935646,
-      name: 'brackets-app',
-      url: 'https://api.github.com/repos/adobe/brackets-app',
-      branches: 6,
-      language: 'C++',
-      isChecked: true,
-    });
+    expect(response.body.savedRepo).toEqual(mockDataSaved);
 
     mockSaveRepo.mockRestore();
   });
