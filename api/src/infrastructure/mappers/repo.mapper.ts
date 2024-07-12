@@ -12,6 +12,7 @@ export class RepoMapper implements Mapper<RepoDto, Repo> {
       dto.name,
       dto.url,
       dto.branches,
+      dto.branchesList,
       dto.language,
       dto.isChecked,
     );
@@ -23,6 +24,7 @@ export class RepoMapper implements Mapper<RepoDto, Repo> {
       domain.name,
       domain.url,
       domain.branches,
+      domain.branchesList,
       domain.language,
       domain.isChecked,
     );

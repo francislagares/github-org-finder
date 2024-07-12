@@ -1,5 +1,9 @@
 import { Repo } from '@/domain';
 
 export interface GithubApiInterface {
-  fetchByOrgName: (orgName: string) => Promise<Repo[]>;
+  fetchByOrgName: (
+    orgName: string,
+    pageNum: number,
+    limit: number,
+  ) => Promise<Repo[]>;
 }

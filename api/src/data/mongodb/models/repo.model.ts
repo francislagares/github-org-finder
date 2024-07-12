@@ -15,7 +15,11 @@ const repoSchema = new Schema({
   },
   branches: {
     type: Number,
-    required: [true, 'Number of branchese is required'],
+    required: [true, 'Number of branches is required'],
+  },
+  branchesList: {
+    type: Array,
+    required: true,
   },
   language: {
     type: String,

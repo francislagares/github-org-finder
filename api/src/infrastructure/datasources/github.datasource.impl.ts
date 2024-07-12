@@ -4,58 +4,72 @@ import { serverSchema } from '@/config/environment';
 
 import { CustomError, RepoDto } from '@/domain';
 import { Repo } from '@/domain/entities/repo';
+import { Branch, BranchesList } from '@/domain/types/branches';
 import { GithubApiInterface, RepoMapper } from '@/infrastructure/';
 
 export class GithubApiDatasourceImpl implements GithubApiInterface {
   private mapper = new RepoMapper();
 
-  private async getBranchesCount(
+  private async getBranches(
     orgName: string,
     repoName: string,
-  ): Promise<number> {
+  ): Promise<BranchesList> {
     const response = await axios.get(
       `${serverSchema.GITHUB_API_URL}/repos/${orgName}/${repoName}/branches`,
       {
         headers: {
           Authorization: `token ${serverSchema.GITHUB_SECRET}`,
         },
+        params: {
+          per_page: 10,
+        },
       },
     );
-    return response.data.length;
+    const branches: Branch[] = response.data.map((branch: Branch) => branch);
+    const totalCount = response.headers['x-total-count']
+      ? parseInt(response.headers['x-total-count'], 10)
+      : branches.length;
+
+    return { branches, totalCount };
   }
 
   public async fetchByOrgName(
     orgName: string,
-    page: number = 1,
-    perPage: number = 10,
+    pageNum: number,
+    limit: number,
   ): Promise<Repo[]> {
     try {
-      const response = await axios.get<RepoDto[]>(
+      const response = await axios.get<Repo[]>(
         `${serverSchema.GITHUB_API_URL}/orgs/${orgName}/repos`,
         {
           headers: {
             Authorization: `token ${serverSchema.GITHUB_SECRET}`,
           },
           params: {
-            page,
-            per_page: perPage,
+            per_page: limit,
+            page: pageNum,
           },
         },
       );
 
       const reposData = response.data;
-      const repos = reposData.map(async (repoDto: RepoDto) => {
-        const branchesCount = await this.getBranchesCount(
-          orgName,
-          repoDto.name,
-        );
-        return this.mapper.toDTO({
-          ...repoDto,
-          branches: branchesCount,
-        });
-      });
+      const repos = await Promise.all(
+        reposData.map(async (repoDto: RepoDto) => {
+          const { branches, totalCount } = await this.getBranches(
+            orgName,
+            repoDto.name,
+          );
+          const repo = this.mapper.toDTO({
+            ...repoDto,
+            branches: totalCount, // Include the total count of branches
+            branchesList: branches, // Include the first 10 branches
+          });
 
-      return Promise.all(repos);
+          return repo;
+        }),
+      );
+
+      return repos;
     } catch (error) {
       if (error instanceof CustomError) {
         throw error;

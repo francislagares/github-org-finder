@@ -16,7 +16,8 @@ export class RepoDatasourceImpl implements RepoDatasource {
   }
 
   public async saveRepo(repoDto: RepoDto): Promise<Repo> {
-    const { id, name, url, branches, language, isChecked } = repoDto;
+    const { id, name, url, branches, branchesList, language, isChecked } =
+      repoDto;
     try {
       const repoExists = await RepoModel.findOne({ githubId: id });
 
@@ -27,6 +28,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
         name,
         url,
         branches,
+        branchesList,
         language,
         isChecked,
       });
@@ -38,6 +40,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
         name: repo.name,
         url: repo.url,
         branches: repo.branches,
+        branchesList: repo.branchesList,
         language: repo.language,
         isChecked: repo.isChecked,
       });
@@ -81,6 +84,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
             name: repo.name,
             url: repo.url,
             branches: repo.branches,
+            branchesList: repo.branchesList,
             language: repo.language,
             isChecked: repo.isChecked,
           }),
@@ -104,6 +108,7 @@ export class RepoDatasourceImpl implements RepoDatasource {
               name: repo.name,
               url: repo.url,
               branches: repo.branches,
+              branchesList: repo.branchesList,
               language: repo.language,
               isChecked: repo.isChecked,
             }),
