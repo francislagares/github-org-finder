@@ -116,6 +116,11 @@ export class RepoDatasourceImpl implements RepoDatasource {
         }
       });
 
+      // Sort combinedRepos so that saved repos appear first
+      combinedRepos.sort(
+        (a, b) => (b.isChecked ? 1 : 0) - (a.isChecked ? 1 : 0),
+      );
+
       await this.redis.setCache(cacheKey, combinedRepos);
 
       return combinedRepos;
