@@ -4,7 +4,11 @@ import { GithubApiDatasourceImpl } from '@/infrastructure/datasources/github.dat
 export class GithubRepositoryImpl {
   constructor(private readonly githubApiDatasource: GithubApiDatasourceImpl) {}
 
-  public async fetchByOrgName(orgName: string): Promise<Repo[]> {
-    return this.githubApiDatasource.fetchByOrgName(orgName);
+  public async fetchByOrgName(
+    orgName: string,
+    pageNum: number,
+    limit: number,
+  ): Promise<Repo[]> {
+    return this.githubApiDatasource.fetchByOrgName(orgName, pageNum, limit);
   }
 }

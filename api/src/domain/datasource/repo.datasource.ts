@@ -8,4 +8,5 @@ export abstract class RepoDatasource {
     limit: number,
   ): Promise<Repo[]>;
   abstract saveRepo(repoDto: RepoDto): Promise<Repo>;
+  abstract deleteRepo(id: number): Promise<void>;
 }

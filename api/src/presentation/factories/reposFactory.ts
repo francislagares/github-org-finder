@@ -1,4 +1,8 @@
-import { FetchReposUseCase, SaveRepoUseCase } from '@/domain';
+import {
+  DeleteRepoUseCase,
+  FetchReposUseCase,
+  SaveRepoUseCase,
+} from '@/domain';
 import { RepoRepositoryImpl } from '@/infrastructure';
 import { RepoDatasourceImpl } from '@/infrastructure/datasources/repo.datasource.impl';
 import ReposController from '@/presentation/controllers/repos/repos.controller';
@@ -9,6 +13,11 @@ export function createReposController(): ReposController {
 
   const fetchReposUseCase = new FetchReposUseCase(repoRepository);
   const saveRepoUseCase = new SaveRepoUseCase(repoRepository);
+  const deleteRepoUseCase = new DeleteRepoUseCase(repoRepository);
 
-  return new ReposController(fetchReposUseCase, saveRepoUseCase);
+  return new ReposController(
+    fetchReposUseCase,
+    saveRepoUseCase,
+    deleteRepoUseCase,
+  );
 }

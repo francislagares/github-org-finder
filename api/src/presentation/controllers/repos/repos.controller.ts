@@ -2,16 +2,23 @@ import { Request, Response } from 'express';
 
 import { asyncMiddleware } from '@/libs/shared/middlewares/async.middleware';
 
-import { FetchReposUseCase, RepoDto, SaveRepoUseCase } from '@/domain';
+import {
+  DeleteRepoUseCase,
+  FetchReposUseCase,
+  Repo,
+  RepoDto,
+  SaveRepoUseCase,
+} from '@/domain';
 
 class ReposController {
   constructor(
     private readonly fetchRepoUseCase: FetchReposUseCase,
     private readonly saveRepoUseCase: SaveRepoUseCase,
+    private readonly deleteRepoUseCase: DeleteRepoUseCase,
   ) {}
 
   public getReposByOrgName = asyncMiddleware(
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: Request, res: Response): Promise<Repo[]> => {
       const { orgName } = req.params;
       const { page, limit } = req.query;
 
@@ -20,7 +27,6 @@ class ReposController {
 
       if (!orgName) {
         res.status(400).json({ error: 'Organization name is required' });
-        return;
       }
 
       const repos = await this.fetchRepoUseCase.execute(
@@ -28,7 +34,10 @@ class ReposController {
         pageNum,
         perPageNum,
       );
+
       res.status(200).json({ repos });
+
+      return repos;
     },
   );
 
@@ -42,7 +51,18 @@ class ReposController {
       }
 
       const savedRepo = await this.saveRepoUseCase.execute(repo);
+
       res.status(200).json({ savedRepo });
+    },
+  );
+
+  public deleteRepo = asyncMiddleware(
+    async (req: Request, res: Response): Promise<void> => {
+      const { id } = req.params;
+
+      await this.deleteRepoUseCase.execute(parseInt(id));
+
+      res.status(200).json({ message: 'Repo deleted successfully.' });
     },
   );
 }

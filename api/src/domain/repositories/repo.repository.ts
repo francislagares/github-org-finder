@@ -7,4 +7,5 @@ export abstract class RepoRepository {
     limit: number,
   ): Promise<Repo[]>;
   abstract saveRepo(repo: Repo): Promise<Repo>;
+  abstract deleteRepo(id: number): Promise<void>;
 }

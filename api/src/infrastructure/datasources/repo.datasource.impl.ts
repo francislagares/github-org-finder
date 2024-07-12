@@ -131,4 +131,12 @@ export class RepoDatasourceImpl implements RepoDatasource {
       throw CustomError.internalServer();
     }
   }
+
+  public async deleteRepo(id: number): Promise<void> {
+    try {
+      await RepoModel.deleteOne({ githubId: id });
+    } catch (error) {
+      throw CustomError.internalServer();
+    }
+  }
 }

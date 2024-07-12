@@ -16,4 +16,8 @@ export class RepoRepositoryImpl implements RepoRepository {
   async saveRepo(repo: Repo): Promise<Repo> {
     return await this.repoDatasource.saveRepo(repo);
   }
+
+  async deleteRepo(id: number): Promise<void> {
+    return this.repoDatasource.deleteRepo(id);
+  }
 }

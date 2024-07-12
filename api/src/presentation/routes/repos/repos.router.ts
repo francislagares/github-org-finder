@@ -14,6 +14,7 @@ export class ReposRoutes {
 
     this.router.get('/orgs/:orgName/repos', controller.getReposByOrgName);
     this.router.post('/repos/save', controller.saveToDatabase);
+    this.router.delete('/repos/:id', controller.deleteRepo);
 
     return this.router;
   }

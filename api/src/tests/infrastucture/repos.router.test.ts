@@ -64,4 +64,16 @@ describe('ReposRoutes', () => {
 
     mockSaveRepo.mockRestore();
   });
+
+  it('should delete a repo from the database', async () => {
+    const mockDeleteRepo = vi
+      .spyOn(RepoDatasourceImpl.prototype, 'deleteRepo')
+      .mockResolvedValue();
+
+    const response = await request(app).delete('/repos/2935735');
+
+    expect(response.status).toBe(200);
+
+    mockDeleteRepo.mockRestore();
+  });
 });
