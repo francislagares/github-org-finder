@@ -23,7 +23,7 @@
     "test:api": "pnpm --filter=@mern-monorepo/api test",
     "test:client": "pnpm --filter=@mern-monorepo/client test",
     "e2e:client": "pnpm --filter=@mern-monorepo/client cypress:run",
-    "build:api": "pnpm --filter=@mern-monorepo/api deploy:dev",
+    "build:api": "pnpm --filter=@mern-monorepo/api build",
     "build:client": "pnpm --filter=@mern-monorepo/client build",
     "deploy": "concurrently --kill-others-on-fail \"pnpm build-client\"  \"pnpm build-api\"",
     "deploy:dev": "pm2 start ecosystem.config.js --only dev && pm2 logs all",

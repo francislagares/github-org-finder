@@ -1,8 +1,67 @@
-# [GET] healthcheck
+openapi: 3.0.0
+info:
+  title: github-org-finder
+  version: 1.0.0
+servers:
+  - url: http://{{base_url}}
+  - url: https://api.github.com
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Repos
+paths:
+  /orgs/adobe/repos:
+    get:
+      tags:
+        - Repos
+      summary: Find Repos ByOrgName
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          example: '10'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /repos/save:
+    post:
+      tags:
+        - Repos
+      summary: Create Repo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: 2935646
+                name: brackets-app
+                url: https://api.github.com/repos/adobe/brackets-app
+                branches: 6
+                language: C++
+                isChecked: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
   /health:
     get:
       tags:
-      - health
+        - health
       summary: Responds if the app is up and running
       responses:
         200:
