@@ -3,68 +3,144 @@ info:
   title: github-org-finder
   version: 1.0.0
 servers:
-  - url: http://{{base_url}}
+  - url: http://localhost:4000
   - url: https://api.github.com
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    Repo:
+      type: object
+      required:
+        - id
+        - name
+        - url
+        - branches
+        - branchesList
+        - language
+        - isChecked
+      properties:
+        id:
+          type: integer
+          description: Repo ID
+        name:
+          type: string
+          description: Repo name
+        url:
+          type: string
+          description: Repo URL
+        branches:
+          type: integer
+          description: Number of repo branches
+        branchesList:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Branch name
+              commit:
+                type: object
+                properties:
+                  sha:
+                    type: string
+                    description: Commit SHA
+                  url:
+                    type: string
+                    description: Commit URL
+              protected:
+                type: boolean
+                description: Is branch protected
+          description: List of branches
+        language:
+          type: string
+          description: Programming language used
+        isChecked:
+          type: boolean
+          description: Marks the repo as saved in the database
+
 tags:
   - name: Repos
+    description: Operations related to repositories
 paths:
-  /orgs/adobe/repos:
+  /orgs/{orgName}/repos:
     get:
       tags:
         - Repos
-      summary: Find Repos ByOrgName
+      summary: Find Repos By Org Name
       security:
         - bearerAuth: []
       parameters:
+        - name: orgName
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the organization
         - name: page
           in: query
           schema:
             type: integer
-          example: '1'
+          example: 4
+          description: Page number for pagination
         - name: limit
           in: query
           schema:
             type: integer
-          example: '10'
+          example: 10
+          description: Number of items per page
       responses:
         '200':
           description: Successful response
           content:
-            application/json: {}
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Repo'
+
   /repos/save:
     post:
       tags:
         - Repos
       summary: Create Repo
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              type: object
-              example:
-                id: 2935646
-                name: brackets-app
-                url: https://api.github.com/repos/adobe/brackets-app
-                branches: 6
-                language: C++
-                isChecked: true
+              $ref: '#/components/schemas/Repo'
       responses:
         '200':
           description: Successful response
           content:
-            application/json: {}
-  /health:
-    get:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Repo'
+
+  /repos/{githubId}:
+    delete:
       tags:
-        - health
-      summary: Responds if the app is up and running
+        - Repos
+      summary: Delete Repo
+      parameters:
+        - name: githubId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: GitHub ID of the repo to delete
       responses:
-        200:
-          description: 'OK'
-        500:
-          description: 'Server Error'
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Repo deleted successfully'
