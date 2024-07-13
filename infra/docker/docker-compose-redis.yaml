@@ -1,7 +1,7 @@
 services:
   redis:
     container_name: redis-cache
-    image: redis
+    image: redis:alpine
     ports:
       - 6379:6379
     healthcheck:
@@ -12,18 +12,19 @@ services:
     command: ["redis-server"]
     volumes:
       - redis:/data
+    networks:
+      - mern
+
   redis-commander:
     container_name: redis-commander
     hostname: redis-commander
     image: ghcr.io/joeferner/redis-commander:latest
     environment:
-      - REDIS_HOSTS=local:redis:6379
+      - REDIS_HOSTS=local:redis-cache:6379
     ports:
       - '8081:8081'
-
-networks:
-  redis:
-    name: redis
+    networks:
+      - mern
 
 volumes:
   redis:
