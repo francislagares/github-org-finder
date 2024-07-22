@@ -10,6 +10,7 @@ services:
       timeout: 3s
       retries: 5
     command: ["redis-server"]
+    restart: unless-stopped
     volumes:
       - redis:/data
     networks:
