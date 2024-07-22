@@ -42,7 +42,7 @@
     "**/*.ts",
     "**/*.tsx",
     "api/vite.config.ts",
-    "client/vitest.config.ts",
+    "client/vitest.config.mts",
     "vitest.config.mts",
     "vitest.workspace.mts"
   ],
