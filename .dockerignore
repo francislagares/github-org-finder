@@ -24,4 +24,4 @@ vitest.config.js
 
 # docker
 Dockerfile
-docker-compose.yml
+docker-compose.yaml
