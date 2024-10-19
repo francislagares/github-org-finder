@@ -1,9 +1,8 @@
 import { useMemo, useState } from 'react';
 
-import DataTable from '@/components/DataTable';
-import SearchBar from '@/components/SearchBar';
-
 import useRepos from '@/hooks/useRepos';
+
+import { DataTable, SearchBar } from '@/components';
 
 import './App.css';
 
