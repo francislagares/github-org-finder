@@ -26,7 +26,7 @@ export class MongoDBInstance {
         logger.info('Successfully connected to database!');
       }
     } catch (error) {
-      logger.error('UsersService databaseConnection() method error:', error);
+      logger.error('MongoDB databaseConnection() method error:', error);
     }
   }
 }
