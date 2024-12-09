@@ -1,19 +1,17 @@
 import eslintRecomended from '@eslint/js';
-import pluginReactQuery from '@tanstack/eslint-plugin-query';
+import eslintNextPlugin from '@next/eslint-plugin-next';
 import typeScriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import eslintImportPlugin from 'eslint-plugin-import';
 import prettierPlugin from 'eslint-plugin-prettier';
 import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
-import eslintPluginReactRefresh from 'eslint-plugin-react-refresh';
 import eslintTestingLibrary from 'eslint-plugin-testing-library';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
 
 export default [
   ...typescriptEslint.configs.recommended,
-  ...pluginReactQuery.configs['flat/recommended'],
   eslintRecomended.configs.recommended,
   eslintConfigPrettier,
 
@@ -42,9 +40,9 @@ export default [
 
     plugins: {
       'react-hooks': eslintPluginReactHooks,
-      'react-refresh': eslintPluginReactRefresh,
       'testing-library': eslintTestingLibrary,
       'typescript-eslint': typeScriptEslintPlugin,
+      next: eslintNextPlugin.configs.recommended,
       import: eslintImportPlugin,
       prettier: prettierPlugin,
     },
@@ -115,13 +113,19 @@ export default [
             },
 
             {
-              pattern: '@/layout/**',
-              group: 'internal',
+              pattern: 'next',
+              group: 'external',
               position: 'before',
             },
 
             {
-              pattern: '@/pages/**',
+              pattern: '**/next/**',
+              group: 'external',
+              position: 'before',
+            },
+
+            {
+              pattern: '@/layout/**',
               group: 'internal',
               position: 'before',
             },
@@ -134,12 +138,6 @@ export default [
 
             {
               pattern: '@/components/**',
-              group: 'internal',
-              position: 'before',
-            },
-
-            {
-              pattern: '@/providers/**',
               group: 'internal',
               position: 'before',
             },

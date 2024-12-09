@@ -4,11 +4,15 @@ services:
     image: client/v1.0.0
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
     networks:
       - mern
-    ports:
-      - '5173:5173'
     volumes:
       - .:/app
       - /app/node_modules
+
+volumes:
+  client:
+    name: client
