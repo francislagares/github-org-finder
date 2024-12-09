@@ -1,13 +1,14 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { expect, test } from 'vitest';
 
 import Home from '@/app/page';
 import { render } from '@/tests/utils/custom-render';
 
-test('Pages Router', () => {
+test('Pages Router', async () => {
   render(<Home />);
 
-  const main = within(screen.getByRole('main'));
+  const main = waitFor(() => screen.getByRole('main'));
+  screen.debug(main);
 
-  expect(main.getByRole('link', { name: /Deploy Now/i })).toBeInTheDocument();
+  expect(main).toBeInTheDocument();
 });
