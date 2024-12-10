@@ -8,7 +8,6 @@ test('Pages Router', async () => {
   render(<App />);
 
   const main = waitFor(() => screen.getByRole('main'));
-  screen.debug(main);
 
   expect(main).toBeInTheDocument();
 });

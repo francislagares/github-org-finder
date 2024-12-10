@@ -1,4 +1,3 @@
-import { Repo } from '@/domain/entities/repo';
 import {
   Paper,
   Table,
@@ -8,6 +7,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+
+import { Repo } from '@/domain/entities/repo';
 
 interface ExpandableRowProps {
   branchesList: Repo['branchesList'];

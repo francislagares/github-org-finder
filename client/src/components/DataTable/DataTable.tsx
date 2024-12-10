@@ -1,6 +1,7 @@
 'use client';
-import { Repo } from '@/domain/entities/repo';
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
+
+import { Repo } from '@/domain/entities/repo';
 
 import { Column, columns } from './columns';
 import ExpandableRow from './ExpandableRow';

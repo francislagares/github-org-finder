@@ -38,7 +38,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "types": ["vitest/globals"],
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "lint-staged.config.js"],
   "exclude": [
     "node_modules",
     "**/node_modules/*",

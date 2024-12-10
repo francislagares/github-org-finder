@@ -1,8 +1,8 @@
-import { IconButton } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import React, { useState } from 'react';
+
+import { Search } from '@mui/icons-material';
+import { IconButton, InputAdornment, Paper } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 interface SearchBarProps {
   onSearch: (orgName: string) => void;
@@ -10,10 +10,6 @@ interface SearchBarProps {
 
 const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const [inputValue, setInputValue] = useState('');
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,32 +19,45 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <Box
+    <Paper
       component='form'
       onSubmit={handleSubmit}
+      elevation={0}
       sx={{
+        p: 1,
         display: 'flex',
-        alignItems: 'center',
-        mb: 2,
-        width: 500,
-        maxWidth: '100%',
+        maxWidth: 600,
+        width: '100%',
+        mx: 'auto',
+        mb: 4,
+        border: '1px solid',
+        borderColor: 'divider',
       }}
     >
       <TextField
-        type='text'
-        value={inputValue}
-        onChange={handleChange}
-        placeholder='Search for an organization'
-        variant='outlined'
-        label='Search'
-        sx={{ marginRight: 1 }}
         fullWidth
+        value={inputValue}
+        onChange={e => setInputValue(e.target.value)}
+        placeholder='Search for repositories by organization name'
+        variant='standard'
+        slotProps={{
+          input: {
+            disableUnderline: true,
+            endAdornment: (
+              <InputAdornment position='end'>
+                <IconButton
+                  type='submit'
+                  sx={{ p: '10px' }}
+                  aria-label='search'
+                >
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+          },
+        }}
       />
-      <IconButton type='submit' aria-label='search'></IconButton>
-      <Button type='submit' variant='contained' color='primary'>
-        Search
-      </Button>
-    </Box>
+    </Paper>
   );
 };
 
