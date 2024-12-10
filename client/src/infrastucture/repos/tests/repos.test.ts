@@ -1,7 +1,7 @@
+import { Repo } from '@/domain/entities/repo';
 import axios from 'axios';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { Repo } from '@/domain/entities/repo';
 import ApiService from '@/infrastucture/api/apiClient';
 
 vi.mock('axios');

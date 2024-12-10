@@ -8,6 +8,7 @@ export function dtoToRepo(dto: RepoDto): Repo {
     name: dto.name,
     url: dto.url,
     branches: dto.branches,
+    branchesList: dto.branchesList,
     language: dto.language,
   };
 }
