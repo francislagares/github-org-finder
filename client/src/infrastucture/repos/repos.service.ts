@@ -2,7 +2,7 @@ import { Repo } from '@/domain/entities/repo';
 import { RepoRepository } from '@/domain/repositories/repos.repository';
 
 import { dtoToRepo } from './mapperDto';
-import { fetchReposByOrgName, postFavoriteRepo } from './repos.api';
+import { deleteRepo, fetchReposByOrgName, postFavoriteRepo } from './repos.api';
 
 export class RepoService implements RepoRepository {
   async getReposByOrgName(
@@ -17,5 +17,9 @@ export class RepoService implements RepoRepository {
 
   async saveFavoriteRepo(repo: Repo): Promise<void> {
     await postFavoriteRepo(repo);
+  }
+
+  async deleteFavoriteRepo(repoId: number): Promise<void> {
+    await deleteRepo(repoId);
   }
 }

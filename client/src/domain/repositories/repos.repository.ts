@@ -7,5 +7,5 @@ export interface RepoRepository {
     limit: number,
   ): Promise<Repo[]>;
   saveFavoriteRepo(repo: Repo): Promise<void>;
-  deleteFavoriteRepo(): Promise<Repo[]>;
+  deleteFavoriteRepo(repoId: number): Promise<void>;
 }

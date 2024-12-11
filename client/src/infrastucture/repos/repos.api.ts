@@ -24,3 +24,9 @@ export const postFavoriteRepo = async (repo: Repo): Promise<void> => {
 
   await service.postRepo(repo);
 };
+
+export const deleteRepo = async (repoId: number): Promise<void> => {
+  const service = new ApiService(`/repos/${repoId}/delete`);
+
+  await service.deleteRepo();
+};

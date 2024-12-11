@@ -1,29 +1,30 @@
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
 
-import { Repo } from '@/domain/entities/repo';
-
-import { Column, columns } from './columns';
 import ExpandableRow from './ExpandableRow';
+import { useTableDeletion } from './hooks/useTableDeletion';
+import { useTableSelection } from './hooks/useTableSelection';
+import { TableProps } from './types';
 
-interface TableProps {
-  data: Repo[];
-  columns: Column[];
-  onSelectRow: (repo: Repo) => void;
-}
+const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
+  const { selectedRows, setSelectedRows, handleRowSelection } =
+    useTableSelection(data, onSelectRow);
 
-const DataTable = ({ data, onSelectRow }: TableProps) => {
+  const { handleRowsDelete } = useTableDeletion(
+    data,
+    onDeleteRow,
+    setSelectedRows,
+  );
+
   const options: MUIDataTableOptions = {
     filter: true,
-    onFilterChange: (changedColumn, filterList) => {
-      console.log('Filter change:', changedColumn, filterList);
-    },
-    selectableRows: 'multiple',
     filterType: 'dropdown' as FilterType,
     responsive: 'standard',
     pagination: false,
     rowsPerPage: 10,
     serverSide: true,
     expandableRows: true,
+    selectableRows: 'multiple',
+    rowsSelected: selectedRows,
     textLabels: {
       selectedRows: {
         text: 'row(s) selected',
@@ -31,24 +32,10 @@ const DataTable = ({ data, onSelectRow }: TableProps) => {
         deleteAria: 'Delete Selected Rows',
       },
     },
-    onRowSelectionChange: (
-      _currentRowsSelected,
-      _allRowsSelected,
-      rowsSelected,
-    ) => {
-      if (!rowsSelected) return;
-
-      rowsSelected.forEach((rowIndex: number) => {
-        const selectedRepo = data[rowIndex];
-
-        if (selectedRepo) {
-          onSelectRow(selectedRepo);
-        }
-      });
-    },
+    onRowSelectionChange: handleRowSelection,
+    onRowsDelete: handleRowsDelete,
     renderExpandableRow: (_rowData, rowMeta) => {
       const branchesList = data[rowMeta.rowIndex]?.branchesList;
-
       return <ExpandableRow branchesList={branchesList || []} />;
     },
   };
