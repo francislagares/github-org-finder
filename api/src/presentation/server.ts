@@ -48,11 +48,20 @@ export class Server {
         origin: serverSchema.CORS_ORIGIN,
         credentials: serverSchema.CORS_CREDENTIALS,
         optionsSuccessStatus: 200,
-        methods: ['GET', 'POST'],
+        methods: ['GET', 'POST', 'DELETE'],
+        allowedHeaders: [
+          'Origin',
+          'X-Requested-With',
+          'Content-Type',
+          'Accept',
+          'Authorization',
+          'Access-Control-Allow-Headers',
+          'Access-Control-Request-Method',
+          'Access-Control-Request-Headers',
+        ],
       }),
     );
   }
-
   private routesMiddleware(app: Application): void {
     applicationRoutes(app);
   }

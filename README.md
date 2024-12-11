@@ -4,6 +4,8 @@
 
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/francislagares/github-org-finder/ci.yaml?style=for-the-badge)
 
+![Image](https://res.cloudinary.com/jobber-app/image/upload/v1733915642/Screenshot_From_2024-12-11_12-10-49_wthrkp.png)
+
 This project is a Node.js-based API for exploring GitHub organization repositories. The API supports both local and Dockerized environments. Follow the instructions below to set up and run the project.
 
 ---
@@ -37,6 +39,7 @@ cd github-org-finder
 # install required dependencies
 pnpm install
 ```
+
 <br />
 
 ## **Environment Variables**
@@ -100,11 +103,9 @@ docker-compose up --build
 - **Method:** `DELETE`
 - **Description:** Deletes a repository from the MongoDB database by its ID.
 
-
 ## Current Project Status
 
-While the API is already functional the client side is still in development and additional features are being developed and refined.  <br />
-Please check the client folder for the latest updates.
+While the API is already functional the client side is still in development and additional features are being developed and refined. <br /> Please check the client folder for the latest updates.
 
 ## Author
 

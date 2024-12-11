@@ -12,9 +12,15 @@ export const fetchReposByOrgName = async (
 ): Promise<Repo[]> => {
   const service = new ApiService<ReposResponse>(`/orgs/${orgName}/repos`);
 
-  const response = await service.getAll<ReposResponse>({
+  const response = await service.getAllRepos<ReposResponse>({
     params: { page, limit },
   });
 
   return response.repos;
+};
+
+export const postFavoriteRepo = async (repo: Repo): Promise<void> => {
+  const service = new ApiService(`/repos/save`);
+
+  await service.postRepo(repo);
 };

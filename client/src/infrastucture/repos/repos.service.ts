@@ -1,9 +1,8 @@
 import { Repo } from '@/domain/entities/repo';
-
 import { RepoRepository } from '@/domain/repositories/repos.repository';
 
 import { dtoToRepo } from './mapperDto';
-import { fetchReposByOrgName } from './repos.api';
+import { fetchReposByOrgName, postFavoriteRepo } from './repos.api';
 
 export class RepoService implements RepoRepository {
   async getReposByOrgName(
@@ -11,8 +10,12 @@ export class RepoService implements RepoRepository {
     page: number,
     limit: number,
   ): Promise<Repo[]> {
-    const productDtos = await fetchReposByOrgName(orgName, page, limit);
+    const reposDto = await fetchReposByOrgName(orgName, page, limit);
 
-    return productDtos.map(dtoToRepo);
+    return reposDto.map(dtoToRepo);
+  }
+
+  async saveFavoriteRepo(repo: Repo): Promise<void> {
+    await postFavoriteRepo(repo);
   }
 }

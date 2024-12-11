@@ -1,5 +1,4 @@
 import { Repo } from '@/domain/entities/repo';
-
 import { RepoRepository } from '@/domain/repositories/repos.repository';
 
 export interface GetReposParams {

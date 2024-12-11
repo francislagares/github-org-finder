@@ -4,6 +4,7 @@ import { DEFAULT_API_BASE_URL } from '@/infrastucture/constants';
 
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -24,11 +25,13 @@ class ApiService<T> {
     this.endpoint = endpoint;
   }
 
-  public getAll = async <R = T>(config?: AxiosRequestConfig): Promise<R> => {
+  public getAllRepos = async <R = T>(
+    config?: AxiosRequestConfig,
+  ): Promise<R> => {
     return axiosInstance.get<R>(this.endpoint, config).then(res => res.data);
   };
 
-  public post = async <R = T>(
+  public postRepo = async <R = T>(
     data: T,
     config?: AxiosRequestConfig,
   ): Promise<R> => {
@@ -37,11 +40,8 @@ class ApiService<T> {
       .then(res => res.data);
   };
 
-  public delete = async (
-    id: string,
-    config?: AxiosRequestConfig,
-  ): Promise<void> => {
-    await axiosInstance.delete(`${this.endpoint}/${id}`, config);
+  public deleteRepo = async (config?: AxiosRequestConfig): Promise<void> => {
+    await axiosInstance.delete(this.endpoint, config);
   };
 }
 

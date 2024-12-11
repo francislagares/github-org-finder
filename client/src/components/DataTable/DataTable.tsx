@@ -1,4 +1,3 @@
-'use client';
 import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
 
 import { Repo } from '@/domain/entities/repo';
@@ -9,9 +8,10 @@ import ExpandableRow from './ExpandableRow';
 interface TableProps {
   data: Repo[];
   columns: Column[];
+  onSelectRow: (repo: Repo) => void;
 }
 
-const DataTable = ({ data }: TableProps) => {
+const DataTable = ({ data, onSelectRow }: TableProps) => {
   const options: MUIDataTableOptions = {
     filter: true,
     onFilterChange: (changedColumn, filterList) => {
@@ -22,7 +22,30 @@ const DataTable = ({ data }: TableProps) => {
     responsive: 'standard',
     pagination: false,
     rowsPerPage: 10,
+    serverSide: true,
     expandableRows: true,
+    textLabels: {
+      selectedRows: {
+        text: 'row(s) selected',
+        delete: 'Delete',
+        deleteAria: 'Delete Selected Rows',
+      },
+    },
+    onRowSelectionChange: (
+      _currentRowsSelected,
+      _allRowsSelected,
+      rowsSelected,
+    ) => {
+      if (!rowsSelected) return;
+
+      rowsSelected.forEach((rowIndex: number) => {
+        const selectedRepo = data[rowIndex];
+
+        if (selectedRepo) {
+          onSelectRow(selectedRepo);
+        }
+      });
+    },
     renderExpandableRow: (_rowData, rowMeta) => {
       const branchesList = data[rowMeta.rowIndex]?.branchesList;
 

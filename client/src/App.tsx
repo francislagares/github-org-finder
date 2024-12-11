@@ -8,7 +8,9 @@ import DataTable from '@/components/DataTable/DataTable';
 
 import CircularLoader from './components/Loader/CircularLoader';
 import SearchBar from './components/SearchBar/SearchBar';
+import { Repo } from './domain/entities/repo';
 import useRepos from './hooks/useRepos';
+import { useSaveRepo } from './hooks/useSaveRepo';
 
 const Home = () => {
   const [orgName, setOrgName] = useState('');
@@ -22,6 +24,25 @@ const Home = () => {
   } = useRepos(orgName);
 
   const repos = data?.pages.flat() || [];
+
+  const mutation = useSaveRepo();
+
+  const handleSelectRepo = (selectedRepo: Repo) => {
+    mutation.mutate(selectedRepo);
+  };
+
+  /* const repoService = new RepoService();
+  const saveRepoUseCase = new SaveRepoUseCase(repoService);
+
+  const handleSelectRepo = async (selectedRepo: Repo) => {
+    try {
+      await saveRepoUseCase.execute({ repo: selectedRepo });
+
+      console.log('Successfully saved repository:', selectedRepo);
+    } catch (error) {
+      console.error('Error saving repo:', error);
+    }
+  }; */
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,7 +81,13 @@ const Home = () => {
           )}
 
           {/* Data table */}
-          {repos.length > 0 && <DataTable columns={columns} data={repos} />}
+          {repos.length > 0 && (
+            <DataTable
+              columns={columns}
+              data={repos}
+              onSelectRow={handleSelectRepo}
+            />
+          )}
 
           {/* Initial loading state */}
           {isLoading && (
