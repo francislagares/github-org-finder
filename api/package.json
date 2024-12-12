@@ -9,9 +9,6 @@
     "start:dev": "pnpm tsx watch --env-file=.env.development.local src/app/index.ts",
     "start": "pnpm build && node dist/src/index.js",
     "build": "tsc && tsc-alias",
-    "deploy:clean": "pm2 stop all && pm2 delete all",
-    "deploy:dev": "pm2 start ecosystem.config.js --only dev && pm2 logs all",
-    "deploy:prod": "pnpm build && pm2 start ecosystem.config.js --only prod",
     "test": "vitest run"
   },
   "dependencies": {

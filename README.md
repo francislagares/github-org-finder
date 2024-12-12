@@ -50,6 +50,7 @@ The API requires the following environment variables. Configure these in a `.env
 GITHUB_SECRET=your_github_secret
 REDIS_HOST=localhost
 DATABASE_URL=mongodb://localhost:27017/repos_db
+CORS_ORIGIN=http://localhost:5173
 ```
 
 ## Running with Docker
@@ -64,6 +65,7 @@ To run the API using Docker:
 GITHUB_SECRET=your_github_secret
 REDIS_HOST=redis
 DATABASE_URL=mongodb://mongodb:27017/repos_db
+CORS_ORIGIN=http://localhost:5173
 ```
 
 3. Build and start the Docker containers:

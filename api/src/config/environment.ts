@@ -1,5 +1,14 @@
 import z from 'zod';
 
+import {
+  BASE_API_URL,
+  CLIENT_URL,
+  CORS_ORIGIN,
+  DEFAULT_HOSTNAME,
+  GITHUB_API_URL,
+  MONGODB_DATABASE_URL,
+} from './constants';
+
 const envSchema = z.object({
   HOST: z
     .string()
@@ -8,7 +17,7 @@ const envSchema = z.object({
       host => host.startsWith('http') || host.startsWith('https'),
       'Invalid URL format',
     )
-    .default('http://localhost'),
+    .default(DEFAULT_HOSTNAME),
   PORT: z.coerce
     .number({
       description:
@@ -17,13 +26,13 @@ const envSchema = z.object({
     .positive()
     .max(65536, `options.port should be >= 0 and < 65536`)
     .default(4000),
-  BASE_URL: z.string().trim().min(1).default('/api/v1'),
+  BASE_URL: z.string().trim().min(1).default(BASE_API_URL),
   DATABASE_URL: z
     .string()
     .url()
     .trim()
     .refine(url => url.startsWith('mongodb://'), 'Invalid Database URL format')
-    .default('mongodb://localhost:27017/'),
+    .default(MONGODB_DATABASE_URL),
   REDIS_HOST: z.string().trim().default('localhost'),
   REDIS_PORT: z.coerce
     .number()
@@ -45,16 +54,21 @@ const envSchema = z.object({
     .url()
     .trim()
     .refine(url => url.startsWith('https://'), 'Invalid Github URL format')
-    .default('https://api.github.com'),
-  GITHUB_SECRET: z.string().trim().default(''),
+    .default(GITHUB_API_URL),
+  GITHUB_SECRET: z
+    .string()
+    .trim()
+    .min(1, 'GitHub token is required')
+    .regex(/^ghp_[a-zA-Z0-9]+$/, 'Invalid GitHub token format')
+    .describe('GitHub Personal Access Token'),
   LOG_DIR: z.string().optional(),
   CLIENT_URL: z
     .string()
     .url()
     .trim()
     .refine(url => url.startsWith('http://'), 'Invalid client URL format')
-    .default('http://localhost:5173/'),
-  CORS_ORIGIN: z.string().trim().min(1).default('*'),
+    .default(CLIENT_URL),
+  CORS_ORIGIN: z.string().trim().min(1).default(CORS_ORIGIN),
   CORS_CREDENTIALS: z.coerce.boolean().default(true),
   NODE_ENV: z
     .enum(['development', 'production', 'test'])
@@ -80,7 +94,12 @@ const envServer = envSchema.safeParse({
 });
 
 if (!envServer.success) {
-  console.error(envServer.error.issues);
+  console.error('Environment validation failed:');
+
+  envServer.error.issues.forEach(issue => {
+    console.error(`- ${issue.path.join('.')}: ${issue.message}`);
+  });
+
   throw new Error('There is an error with the server environment variables');
 }
 
