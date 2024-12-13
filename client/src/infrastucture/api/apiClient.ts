@@ -1,9 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import { DEFAULT_API_BASE_URL } from '@/infrastucture/constants';
+import { API_BASE_URL, DEFAULT_API_BASE_URL } from '@/infrastucture/constants';
 
 export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL,
+  baseURL: API_BASE_URL || DEFAULT_API_BASE_URL,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

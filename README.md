@@ -105,6 +105,37 @@ docker-compose up --build
 - **Method:** `DELETE`
 - **Description:** Deletes a repository from the MongoDB database by its ID.
 
+## Query the API in Swagger
+
+This project provides an API that you can interact with using Swagger, an interactive API documentation tool. To query the API correctly, you need to configure your environment with the GITHUB_SECRET token, which is required to access certain routes of the API.
+
+### 2. Access Swagger
+
+Once the `GITHUB_SECRET` variable is configured, you can access Swagger to explore and query the API.
+
+- **Swagger URL**: [http://localhost:4000/api-docs](http://localhost:4000/api-docs) _(adjust the port if needed)_.
+
+### 3. Authenticate with GitHub Secret
+
+When accessing the API documentation via Swagger, you need to authenticate using the `GITHUB_SECRET` token. This is done via an HTTP header for routes that require authentication.
+
+#### Add the token in Swagger
+
+1. Open the Swagger page in your browser.
+2. At the top, you'll find an "Authorize" button.
+3. Click on "Authorize".
+4. In the authentication field, enter your actual GITHUB_SECRET token for the `Authorization` header like so:
+
+```
+ghp_12345abcdef6789test
+```
+
+(Replace ghp_12345abcdef6789 with your actual GITHUB_SECRET token).
+
+5. Click "Authorize" to confirm.
+
+Now you will be able to make authenticated requests to the API routes that require the GITHUB_SECRET token.
+
 ## Current Project Status
 
 While the API is already functional the client side is still in development and additional features are being developed and refined. <br /> Please check the client folder for the latest updates.
