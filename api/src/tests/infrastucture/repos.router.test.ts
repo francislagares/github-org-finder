@@ -70,7 +70,7 @@ describe('ReposRoutes', () => {
       .spyOn(RepoDatasourceImpl.prototype, 'deleteRepo')
       .mockResolvedValue();
 
-    const response = await request(app).delete('/repos/2935735');
+    const response = await request(app).delete('/repos/2935735/delete');
 
     expect(response.status).toBe(200);
 
