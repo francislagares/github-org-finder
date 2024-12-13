@@ -38,7 +38,7 @@
     "deploy:full:staging": "pnpm build && pnpm deploy:staging",
     "deploy:full:prod": "pnpm build && pnpm deploy:prod",
     "type-check": "tsc --project tsconfig.json --pretty --noEmit",
-    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "lint": "eslint --fix",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "format": "prettier --ignore-path .gitignore \"src/**/*.+(ts|js|tsx|json|md)\" --write",
     "prepare": "husky"

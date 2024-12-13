@@ -43,18 +43,18 @@ export default [
       },
     },
     rules: {
-      ...typescriptRules, 
+      ...typescriptRules,
       'import/order': importOrderConfig,
     },
   },
   {
     ignores: [
-      'node_modules/**',
       'dist/**',
       'build/**',
       'coverage/**',
+      '**/node_modules/',
+      'node_modules/',
       '*.config.{js,ts,mjs}',
-      '.next/**',
     ],
   },
 ];

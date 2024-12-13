@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-
 import { Search } from '@mui/icons-material';
 import { IconButton, InputAdornment, Paper } from '@mui/material';
 import TextField from '@mui/material/TextField';
+import React, { useState } from 'react';
 
 interface SearchBarProps {
   onSearch: (orgName: string) => void;
@@ -20,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <Paper
-      component='form'
+      component="form"
       onSubmit={handleSubmit}
       elevation={0}
       sx={{
@@ -38,17 +37,17 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         fullWidth
         value={inputValue}
         onChange={e => setInputValue(e.target.value)}
-        placeholder='Search for repositories by organization name'
-        variant='standard'
+        placeholder="Search for repositories by organization name"
+        variant="standard"
         slotProps={{
           input: {
             disableUnderline: true,
             endAdornment: (
-              <InputAdornment position='end'>
+              <InputAdornment position="end">
                 <IconButton
-                  type='submit'
+                  type="submit"
                   sx={{ p: '10px' }}
-                  aria-label='search'
+                  aria-label="search"
                 >
                   <Search />
                 </IconButton>

@@ -1,8 +1,7 @@
+import { Repo } from '@/domain/entities/repo';
 import { useCallback } from 'react';
 
-import { DeletedRows } from '@/components/DataTable/types';
-
-import { Repo } from '@/domain/entities/repo';
+import { DeletedRows } from '@/presentation/components/DataTable/types';
 
 export const useTableDeletion = (
   data: Repo[],

@@ -1,9 +1,10 @@
-import MUIDataTable, { FilterType, MUIDataTableOptions } from 'mui-datatables';
+import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 
+import { defaultTableOptions } from './config/tableOptions';
 import ExpandableRow from './ExpandableRow';
 import { useTableDeletion } from './hooks/useTableDeletion';
 import { useTableSelection } from './hooks/useTableSelection';
-import { TableProps } from './types';
+import { DataTableOptions, TableProps } from './types';
 
 const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
   const { selectedRows, setSelectedRows, handleRowSelection } =
@@ -15,23 +16,9 @@ const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
     setSelectedRows,
   );
 
-  const options: MUIDataTableOptions = {
-    filter: true,
-    filterType: 'dropdown' as FilterType,
-    responsive: 'standard',
-    pagination: false,
-    rowsPerPage: 10,
-    serverSide: true,
-    expandableRows: true,
-    selectableRows: 'multiple',
+  const options: DataTableOptions = {
+    ...defaultTableOptions,
     rowsSelected: selectedRows,
-    textLabels: {
-      selectedRows: {
-        text: 'row(s) selected',
-        delete: 'Delete',
-        deleteAria: 'Delete Selected Rows',
-      },
-    },
     onRowSelectionChange: handleRowSelection,
     onRowsDelete: handleRowsDelete,
     renderExpandableRow: (_rowData, rowMeta) => {
@@ -42,10 +29,10 @@ const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
 
   return (
     <MUIDataTable
-      title='List of Repositories'
+      title="List of Repositories"
       data={data}
       columns={columns}
-      options={options}
+      options={options as MUIDataTableOptions}
     />
   );
 };

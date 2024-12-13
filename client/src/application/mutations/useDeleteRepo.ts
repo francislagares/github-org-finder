@@ -1,7 +1,7 @@
+import { Repo } from '@/domain/entities/repo';
 import { useMutation } from '@tanstack/react-query';
 
 import { DeleteRepoUseCase } from '@/application/usecases/deleteRepo';
-import { Repo } from '@/domain/entities/repo';
 import { RepoService } from '@/infrastucture/repos/repos.service';
 
 const repoService = new RepoService();

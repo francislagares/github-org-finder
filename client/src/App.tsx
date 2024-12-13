@@ -1,19 +1,15 @@
-import { useEffect, useState } from 'react';
-
+import { Repo } from '@/domain/entities/repo';
 import { GitHub } from '@mui/icons-material';
 import { Alert, Box, Container, Stack, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-import { columns } from '@/components/DataTable/columns';
-import DataTable from '@/components/DataTable/DataTable';
-import CircularLoader from '@/components/Loader/CircularLoader';
-import SearchBar from '@/components/SearchBar/SearchBar';
-
-import useRepos from '@/hooks/useRepos';
-
-import { Repo } from '@/domain/entities/repo';
-
-import { useDeleteRepo } from './hooks/useDeleteRepo';
-import { useSaveRepo } from './hooks/useSaveRepo';
+import { useDeleteRepo } from '@/application/mutations/useDeleteRepo';
+import { useSaveRepo } from '@/application/mutations/useSaveRepo';
+import useRepos from '@/application/queries/useRepos';
+import { columns } from '@/presentation/components/DataTable/columns';
+import DataTable from '@/presentation/components/DataTable/DataTable';
+import CircularLoader from '@/presentation/components/Loader/CircularLoader';
+import SearchBar from '@/presentation/components/SearchBar/SearchBar';
 
 const Home = () => {
   const [orgName, setOrgName] = useState('');
@@ -55,11 +51,11 @@ const Home = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50' }}>
-      <Container maxWidth='lg' sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
         <Stack>
-          <Box textAlign='center'>
+          <Box textAlign="center">
             <GitHub sx={{ fontSize: 48, mb: 2 }} />
-            <Typography variant='h3' component='h1' gutterBottom>
+            <Typography variant="h3" component="h1" gutterBottom>
               GitHub Repository Search
             </Typography>
           </Box>
@@ -68,7 +64,7 @@ const Home = () => {
 
           {/* Error alert */}
           {error && (
-            <Alert severity='error' sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
+            <Alert severity="error" sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
               {`Error fetching repos: ${error instanceof Error ? error.message : 'Unknown error'}`}
             </Alert>
           )}
@@ -99,7 +95,7 @@ const Home = () => {
             !hasNextPage &&
             repos.length > 0 && (
               <Alert
-                severity='info'
+                severity="info"
                 sx={{
                   maxWidth: 600,
                   mx: 'auto',
@@ -115,7 +111,7 @@ const Home = () => {
           {/* No results */}
           {!isLoading && !repos.length && orgName && (
             <Alert
-              severity='info'
+              severity="info"
               sx={{
                 maxWidth: 600,
                 mx: 'auto',

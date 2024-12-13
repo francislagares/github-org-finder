@@ -38,10 +38,10 @@
     "forceConsistentCasingInFileNames": true
   },
   "types": ["vitest/globals"],
-  "include": ["**/*.ts", "**/*.tsx", "lint-staged.config.js"],
+  "include": ["**/*.ts", "**/*.tsx", "**/.storybook/*"],
   "exclude": [
     "node_modules",
-    "**/node_modules/*",
+    "**/node_modules",
     "**/dist/*",
     "./client/cypress.config.ts"
   ]

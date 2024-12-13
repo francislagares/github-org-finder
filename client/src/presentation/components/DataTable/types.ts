@@ -1,6 +1,18 @@
 import { Repo } from '@/domain/entities/repo';
+import { MUIDataTableOptions } from 'mui-datatables';
 
 import { Column } from './columns';
+
+export type DataTableOptions = Omit<
+  MUIDataTableOptions,
+  'onRowSelectionChange'
+> & {
+  onRowSelectionChange?: (
+    currentRowsSelected: RowSelectionInfo[],
+    allRowsSelected: RowSelectionInfo[],
+    rowsSelected: number[],
+  ) => void;
+};
 
 export interface RowSelectionInfo {
   index: number;

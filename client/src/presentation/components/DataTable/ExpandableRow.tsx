@@ -1,3 +1,4 @@
+import { Repo } from '@/domain/entities/repo';
 import {
   Paper,
   Table,
@@ -8,8 +9,6 @@ import {
   TableRow,
 } from '@mui/material';
 
-import { Repo } from '@/domain/entities/repo';
-
 interface ExpandableRowProps {
   branchesList: Repo['branchesList'];
 }
@@ -19,32 +18,32 @@ const ExpandableRow = ({ branchesList = [] }: ExpandableRowProps) => {
     <TableRow>
       <TableCell colSpan={6}>
         <TableContainer component={Paper}>
-          <Table style={{ minWidth: 750 }} aria-label='simple table'>
+          <Table style={{ minWidth: 750 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>Branch Name</TableCell>
-                <TableCell align='center'>Commit SHA</TableCell>
-                <TableCell align='center'>Commit URL</TableCell>
-                <TableCell align='center'>Protected</TableCell>
+                <TableCell align="center">Commit SHA</TableCell>
+                <TableCell align="center">Commit URL</TableCell>
+                <TableCell align="center">Protected</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {branchesList?.map(branch => (
                 <TableRow key={branch.name}>
-                  <TableCell component='th' scope='row'>
+                  <TableCell component="th" scope="row">
                     {branch.name}
                   </TableCell>
-                  <TableCell align='center'>{branch.commit.sha}</TableCell>
-                  <TableCell align='center'>
+                  <TableCell align="center">{branch.commit.sha}</TableCell>
+                  <TableCell align="center">
                     <a
                       href={branch.commit.url}
-                      target='_blank'
-                      rel='noopener noreferrer'
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
                       {branch.commit.url}
                     </a>
                   </TableCell>
-                  <TableCell align='center'>
+                  <TableCell align="center">
                     {branch.protected.toString()}
                   </TableCell>
                 </TableRow>

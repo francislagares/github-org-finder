@@ -1,8 +1,7 @@
+import { Repo } from '@/domain/entities/repo';
 import { useCallback, useState } from 'react';
 
-import { RowSelectionInfo } from '@/components/DataTable/types';
-
-import { Repo } from '@/domain/entities/repo';
+import { RowSelectionInfo } from '@/presentation/components/DataTable/types';
 
 export const useTableSelection = (
   data: Repo[],
