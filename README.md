@@ -53,7 +53,57 @@ DATABASE_URL=mongodb://localhost:27017/repos_db
 CORS_ORIGIN=http://localhost:5173
 ```
 
-## Running with Docker
+## 2. Running with PM2
+
+To run the API using pm2:
+
+1. Create a `.env.development.local` file in the api directory with the following Docker environment variables.
+
+```env
+GITHUB_SECRET=your_github_secret
+REDIS_HOST=localhost
+DATABASE_URL=mongodb://localhost:27017/repos_db
+CORS_ORIGIN=http://localhost:5173
+```
+
+### Local environment
+1. Run the following command:
+
+```sh
+pnpm pm2:dev
+```
+
+### Production environment
+
+1. Run the following command:
+
+```sh
+pnpm build:api
+```
+
+2. Start the PM2 Daemon:
+
+```sh
+pnpm pm2:prod
+```
+
+### Side Notes
+
+You need to stop and clean the instance of pm2 before switching environment. Or just change ports in ecosystem.config.js file.
+
+### Stop the PM2 Daemon
+
+```sh
+pnpm pm2:stop
+```
+### Clean PM2 instance
+
+```sh
+pnpm pm2:clean
+```
+
+
+## 3. Running with Docker
 
 To run the API using Docker:
 

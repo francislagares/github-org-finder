@@ -7,5 +7,5 @@ export interface Repo {
   branches: number;
   branchesList?: Branch[];
   language: string;
-  isChecked?: boolean;
+  isChecked: boolean;
 }

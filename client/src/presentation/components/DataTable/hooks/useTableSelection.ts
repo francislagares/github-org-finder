@@ -1,9 +1,9 @@
 import { Repo } from '@/domain/entities/repo';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { TOAST_MESSAGES } from '@/presentation/components/DataTable/constants/toastMessages';
 import { useToast } from '@/presentation/hooks/useToast';
 
+import { TOAST_MESSAGES } from '../constants/toastMessages';
 import { RowSelectionInfo } from '../types';
 
 export const useTableSelection = (
@@ -16,6 +16,14 @@ export const useTableSelection = (
   );
   const { showSuccessMessage, showInfoMessage, showErrorMessage } = useToast();
 
+  useEffect(() => {
+    const newSelectedRows = data
+      .map((repo, index) => (repo.isChecked ? index : -1))
+      .filter(index => index !== -1);
+
+    setSelectedRows(newSelectedRows);
+  }, [data]);
+
   const handleRowSelection = useCallback(
     async (
       currentRowsSelected: RowSelectionInfo[],
@@ -23,14 +31,11 @@ export const useTableSelection = (
       rowsSelected: number[],
     ) => {
       const lastAction = currentRowsSelected[currentRowsSelected.length - 1];
-
       if (!lastAction) return;
 
       const repo = data[lastAction.dataIndex];
-
       if (!repo) return;
 
-      // Only handle selection events
       if (rowsSelected.includes(lastAction.index)) {
         try {
           if (previouslySelected.has(repo.id)) {
@@ -38,7 +43,9 @@ export const useTableSelection = (
             return;
           }
 
-          onSelectRow(repo);
+          const updatedRepo = { ...repo, isChecked: true };
+          onSelectRow(updatedRepo);
+
           setPreviouslySelected(prev => new Set([...prev, repo.id]));
           showSuccessMessage(TOAST_MESSAGES.REPO_SAVE_SUCCESS);
         } catch (error) {
@@ -47,18 +54,24 @@ export const useTableSelection = (
               ? error.message
               : TOAST_MESSAGES.DEFAULT_ERROR,
           );
-          // Remove the row from selection if save failed
-          const newSelection = rowsSelected.filter(
+          const revertedSelection = rowsSelected.filter(
             index => index !== lastAction.index,
           );
-          setSelectedRows(newSelection);
+          setSelectedRows(revertedSelection);
           return;
         }
       }
 
       setSelectedRows(rowsSelected);
     },
-    [data, onSelectRow, previouslySelected, showInfoMessage, showErrorMessage],
+    [
+      data,
+      onSelectRow,
+      previouslySelected,
+      showInfoMessage,
+      showSuccessMessage,
+      showErrorMessage,
+    ],
   );
 
   return {

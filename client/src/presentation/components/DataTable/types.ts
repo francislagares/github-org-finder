@@ -22,6 +22,7 @@ export interface RowSelectionInfo {
 export interface TableProps {
   data: Repo[];
   columns: Column[];
+  currentPage: number;
   onSelectRow: (repo: Repo) => void;
   onDeleteRow: (repo: Repo) => void;
 }

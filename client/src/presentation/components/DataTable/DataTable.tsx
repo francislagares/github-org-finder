@@ -1,4 +1,5 @@
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
+import { memo } from 'react';
 
 import { defaultTableOptions } from './config/tableOptions';
 import ExpandableRow from './ExpandableRow';
@@ -9,7 +10,7 @@ import { DataTableOptions, TableProps } from './types';
 const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
   const { selectedRows, setSelectedRows, handleRowSelection } =
     useTableSelection(data, onSelectRow);
-
+  console.log('rendered');
   const { handleRowsDelete } = useTableDeletion(
     data,
     onDeleteRow,
@@ -37,4 +38,4 @@ const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
   );
 };
 
-export default DataTable;
+export default memo(DataTable);

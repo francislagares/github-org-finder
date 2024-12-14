@@ -7,4 +7,5 @@ export interface RepoDto {
   branches: number;
   branchesList?: Branch[];
   language: string;
+  isChecked: boolean;
 }

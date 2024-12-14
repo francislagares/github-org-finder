@@ -10,5 +10,6 @@ export function dtoToRepo(dto: RepoDto): Repo {
     branches: dto.branches,
     branchesList: dto.branchesList,
     language: dto.language,
+    isChecked: dto.isChecked,
   };
 }
