@@ -11,6 +11,8 @@ import DataTable from '@/presentation/components/DataTable/DataTable';
 import CircularLoader from '@/presentation/components/Loader/CircularLoader';
 import SearchBar from '@/presentation/components/SearchBar/SearchBar';
 
+import 'react-toastify/dist/ReactToastify.css';
+
 const Home = () => {
   const [orgName, setOrgName] = useState('');
   const {

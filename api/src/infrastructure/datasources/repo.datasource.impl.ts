@@ -136,6 +136,9 @@ export class RepoDatasourceImpl implements RepoDatasource {
     try {
       await RepoModel.deleteOne({ githubId: id });
     } catch (error) {
+      if (error instanceof CustomError) {
+        throw error;
+      }
       throw CustomError.internalServer();
     }
   }

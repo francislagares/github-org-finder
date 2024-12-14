@@ -6,11 +6,14 @@ import ReactDOM from 'react-dom/client';
 
 import App from '@/App';
 import ReactQueryProvider from '@/presentation/providers/ReactQueryProvider';
+import ToastProvider from '@/presentation/providers/ToastProvider';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <ReactQueryProvider>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
       <ReactQueryDevtools />
     </ReactQueryProvider>
   </React.StrictMode>,
