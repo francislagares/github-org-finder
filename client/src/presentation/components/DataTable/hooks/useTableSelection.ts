@@ -6,15 +6,15 @@ import { useToast } from '@/presentation/hooks/useToast';
 import { TOAST_MESSAGES } from '../constants/toastMessages';
 import { RowSelectionInfo } from '../types';
 
+import { useCheckedRepos } from './useCheckedRepos';
+
 export const useTableSelection = (
   data: Repo[],
   onSelectRow: (repo: Repo) => void,
 ) => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const [previouslySelected, setPreviouslySelected] = useState<Set<number>>(
-    new Set(),
-  );
-  const { showSuccessMessage, showInfoMessage, showErrorMessage } = useToast();
+  const { handleRepoCheck, removeCheckedRepo } = useCheckedRepos();
+  const { showSuccessMessage, showErrorMessage } = useToast();
 
   useEffect(() => {
     const newSelectedRows = data
@@ -38,15 +38,18 @@ export const useTableSelection = (
 
       if (rowsSelected.includes(lastAction.index)) {
         try {
-          if (previouslySelected.has(repo.id)) {
-            showInfoMessage(TOAST_MESSAGES.REPO_PREVIOUSLY_SELECTED);
+          // Check if repo was previously selected
+          if (!handleRepoCheck(repo)) {
+            // Revert selection if repo was previously selected
+            const revertedSelection = rowsSelected.filter(
+              index => index !== lastAction.index,
+            );
+            setSelectedRows(revertedSelection);
             return;
           }
 
           const updatedRepo = { ...repo, isChecked: true };
-          onSelectRow(updatedRepo);
-
-          setPreviouslySelected(prev => new Set([...prev, repo.id]));
+          await onSelectRow(updatedRepo);
           showSuccessMessage(TOAST_MESSAGES.REPO_SAVE_SUCCESS);
         } catch (error) {
           showErrorMessage(
@@ -54,6 +57,7 @@ export const useTableSelection = (
               ? error.message
               : TOAST_MESSAGES.DEFAULT_ERROR,
           );
+          removeCheckedRepo(repo.id);
           const revertedSelection = rowsSelected.filter(
             index => index !== lastAction.index,
           );
@@ -67,8 +71,8 @@ export const useTableSelection = (
     [
       data,
       onSelectRow,
-      previouslySelected,
-      showInfoMessage,
+      handleRepoCheck,
+      removeCheckedRepo,
       showSuccessMessage,
       showErrorMessage,
     ],

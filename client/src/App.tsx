@@ -1,13 +1,14 @@
 import { Repo } from '@/domain/entities/repo';
 import { GitHub } from '@mui/icons-material';
 import { Alert, Box, Container, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useDeleteRepo } from '@/application/mutations/useDeleteRepo';
 import { useSaveRepo } from '@/application/mutations/useSaveRepo';
 import useRepos from '@/application/queries/useRepos';
 import { columns } from '@/presentation/components/DataTable/columns';
 import DataTable from '@/presentation/components/DataTable/DataTable';
+import { sortReposByCheckedStatus } from '@/presentation/components/DataTable/utils/sortUtils';
 import CircularLoader from '@/presentation/components/Loader/CircularLoader';
 import SearchBar from '@/presentation/components/SearchBar/SearchBar';
 
@@ -23,7 +24,14 @@ const Home = () => {
     hasNextPage,
     error,
   } = useRepos(orgName);
-  const repos = data?.pages.flat() || [];
+
+  // Combine and sort all pages of data
+  const sortedRepos = useMemo(() => {
+    const allRepos = data?.pages.flat() || [];
+    const { uniqueCheckedRepos, uniqueUncheckedRepos } =
+      sortReposByCheckedStatus(allRepos);
+    return [...uniqueCheckedRepos, ...uniqueUncheckedRepos];
+  }, [data?.pages]);
 
   const mutationPost = useSaveRepo();
   const handleSelectRepo = (selectedRepo: Repo) => {
@@ -64,38 +72,33 @@ const Home = () => {
 
           <SearchBar onSearch={setOrgName} />
 
-          {/* Error alert */}
           {error && (
             <Alert severity="error" sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
               {`Error fetching repos: ${error instanceof Error ? error.message : 'Unknown error'}`}
             </Alert>
           )}
 
-          {/* Data table */}
-          {repos.length > 0 && (
+          {sortedRepos.length > 0 && (
             <DataTable
               columns={columns}
-              data={repos}
+              data={sortedRepos}
               onSelectRow={handleSelectRepo}
               onDeleteRow={handleDeleteRow}
             />
           )}
 
-          {/* Initial loading state */}
           {isLoading && (
             <Typography sx={{ marginTop: 5, textAlign: 'center' }}>
               Loading Content...
             </Typography>
           )}
 
-          {/* Loading more data */}
           {isFetchingNextPage && <CircularLoader />}
 
-          {/* No more data */}
           {!isLoading &&
             !isFetchingNextPage &&
             !hasNextPage &&
-            repos.length > 0 && (
+            sortedRepos.length > 0 && (
               <Alert
                 severity="info"
                 sx={{
@@ -110,8 +113,7 @@ const Home = () => {
               </Alert>
             )}
 
-          {/* No results */}
-          {!isLoading && !repos.length && orgName && (
+          {!isLoading && !sortedRepos.length && orgName && (
             <Alert
               severity="info"
               sx={{

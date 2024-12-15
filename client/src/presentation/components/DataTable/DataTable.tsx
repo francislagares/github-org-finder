@@ -10,7 +10,7 @@ import { DataTableOptions, TableProps } from './types';
 const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
   const { selectedRows, setSelectedRows, handleRowSelection } =
     useTableSelection(data, onSelectRow);
-  console.log('rendered');
+
   const { handleRowsDelete } = useTableDeletion(
     data,
     onDeleteRow,
