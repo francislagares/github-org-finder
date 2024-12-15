@@ -1,20 +1,20 @@
 import { Repo } from '@/domain/entities/repo';
-import { GitHub } from '@mui/icons-material';
-import { Alert, Box, Container, Stack, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { Alert, Stack } from '@mui/material';
+import { useMemo, useState } from 'react';
 
 import { useDeleteRepo } from '@/application/mutations/useDeleteRepo';
 import { useSaveRepo } from '@/application/mutations/useSaveRepo';
 import useRepos from '@/application/queries/useRepos';
-import { columns } from '@/presentation/components/DataTable/columns';
-import DataTable from '@/presentation/components/DataTable/DataTable';
 import { sortReposByCheckedStatus } from '@/presentation/components/DataTable/utils/sortUtils';
-import CircularLoader from '@/presentation/components/Loader/CircularLoader';
+import Header from '@/presentation/components/Header/Header';
+import Layout from '@/presentation/components/Layout/Layout';
+import RepoList from '@/presentation/components/RepoList/RepoList';
 import SearchBar from '@/presentation/components/SearchBar/SearchBar';
+import { useInfiniteScroll } from '@/presentation/hooks/useInfiniteScroll';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-const Home = () => {
+const App = () => {
   const [orgName, setOrgName] = useState('');
   const {
     data,
@@ -24,6 +24,13 @@ const Home = () => {
     hasNextPage,
     error,
   } = useRepos(orgName);
+
+  // Set up infinite scrolling
+  useInfiniteScroll({
+    hasNextPage: !!hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  });
 
   // Combine and sort all pages of data
   const sortedRepos = useMemo(() => {
@@ -61,95 +68,30 @@ const Home = () => {
     await mutationDelete.mutateAsync(selectedRepo);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 100 &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
-        fetchNextPage();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: 'grey.50' }}>
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Stack>
-          <Box textAlign="center">
-            <GitHub sx={{ fontSize: 48, mb: 2 }} />
-            <Typography variant="h3" component="h1" gutterBottom>
-              GitHub Repository Search
-            </Typography>
-          </Box>
+    <Layout>
+      <Stack>
+        <Header />
+        <SearchBar onSearch={setOrgName} />
 
-          <SearchBar onSearch={setOrgName} />
+        {error && (
+          <Alert severity="error" sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
+            {`Error fetching repos: ${error instanceof Error ? error.message : 'Unknown error'}`}
+          </Alert>
+        )}
 
-          {error && (
-            <Alert severity="error" sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
-              {`Error fetching repos: ${error instanceof Error ? error.message : 'Unknown error'}`}
-            </Alert>
-          )}
-
-          {sortedRepos.length > 0 && (
-            <DataTable
-              columns={columns}
-              data={sortedRepos}
-              onSelectRow={handleSelectRepo}
-              onDeleteRow={handleDeleteRow}
-            />
-          )}
-
-          {isLoading && (
-            <Typography sx={{ marginTop: 5, textAlign: 'center' }}>
-              Loading Content...
-            </Typography>
-          )}
-
-          {isFetchingNextPage && <CircularLoader />}
-
-          {!isLoading &&
-            !isFetchingNextPage &&
-            !hasNextPage &&
-            sortedRepos.length > 0 && (
-              <Alert
-                severity="info"
-                sx={{
-                  maxWidth: 600,
-                  mx: 'auto',
-                  mt: 4,
-                  border: '1px solid',
-                  borderColor: 'grey.300',
-                }}
-              >
-                No more repositories to load.
-              </Alert>
-            )}
-
-          {!isLoading && !sortedRepos.length && orgName && (
-            <Alert
-              severity="info"
-              sx={{
-                maxWidth: 600,
-                mx: 'auto',
-                mt: 4,
-                border: '1px solid',
-                borderColor: 'grey.300',
-              }}
-            >
-              No repositories found for "{orgName}". Try searching for a
-              different organization.
-            </Alert>
-          )}
-        </Stack>
-      </Container>
-    </Box>
+        <RepoList
+          repos={sortedRepos}
+          isLoading={isLoading}
+          isFetchingNextPage={isFetchingNextPage}
+          hasNextPage={!!hasNextPage}
+          orgName={orgName}
+          onSelectRepo={handleSelectRepo}
+          onDeleteRepo={handleDeleteRow}
+        />
+      </Stack>
+    </Layout>
   );
 };
 
-export default Home;
+export default App;
