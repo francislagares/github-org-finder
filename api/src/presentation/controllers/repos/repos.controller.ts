@@ -18,7 +18,7 @@ class ReposController {
   ) {}
 
   public getReposByOrgName = asyncMiddleware(
-    async (req: Request, res: Response): Promise<Repo[]> => {
+    async (req: Request, res: Response): Promise<Repo[] | void> => {
       const { orgName } = req.params;
       const { page, limit } = req.query;
 
@@ -27,6 +27,8 @@ class ReposController {
 
       if (!orgName) {
         res.status(400).json({ error: 'Organization name is required' });
+
+        return;
       }
 
       const repos = await this.fetchRepoUseCase.execute(
@@ -59,6 +61,11 @@ class ReposController {
   public deleteRepo = asyncMiddleware(
     async (req: Request, res: Response): Promise<void> => {
       const { id } = req.params;
+
+      if (!id) {
+        res.status(400).json({ error: 'Repository ID is required' });
+        return;
+      }
 
       await this.deleteRepoUseCase.execute(parseInt(id));
 

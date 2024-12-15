@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from 'express';
 
-type RouteHandler<T> = (req: Request, res: Response) => Promise<T>;
+type RouteHandler<T> = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => Promise<T>;
 
 export const asyncMiddleware = <T>(routeHandler: RouteHandler<T>) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await routeHandler(req, res);
+      await routeHandler(req, res, next);
     } catch (err) {
-      // Pass the error thrown to the Express error handling middleware
       next(err);
     }
   };

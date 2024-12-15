@@ -22,7 +22,7 @@
     "test:coverage": "vitest run --coverage",
     "test:api": "pnpm --filter=@github-org-finder/api test",
     "test:client": "pnpm --filter=@github-org-finder/client test",
-    "e2e:client": "pnpm --filter=@github-org-finder/client cypress:run",
+    "e2e:client": "pnpm --filter=@github-org-finder/client cypress:open",
     "build:api": "pnpm --filter=@github-org-finder/api build",
     "build:client": "pnpm --filter=@github-org-finder/client build",
     "deploy": "concurrently --kill-others-on-fail \"pnpm build-client\"  \"pnpm build-api\"",

@@ -43,6 +43,5 @@
     "node_modules",
     "**/node_modules",
     "**/dist/*",
-    "./client/cypress.config.ts"
   ]
 }
