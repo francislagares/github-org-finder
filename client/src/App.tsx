@@ -12,7 +12,7 @@ import RepoList from '@/presentation/components/RepoList/RepoList';
 import SearchBar from '@/presentation/components/SearchBar/SearchBar';
 import { useInfiniteScroll } from '@/presentation/hooks/useInfiniteScroll';
 
-import 'react-toastify/dist/ReactToastify.css';
+import { ERROR_MESSAGES } from './constants';
 
 const App = () => {
   const [orgName, setOrgName] = useState('');
@@ -76,7 +76,10 @@ const App = () => {
 
         {error && (
           <Alert severity="error" sx={{ maxWidth: 600, mx: 'auto', my: 2 }}>
-            {`Error fetching repos: ${error instanceof Error ? error.message : 'Unknown error'}`}
+            {ERROR_MESSAGES.FETCH_ERROR}: $
+            {error instanceof Error
+              ? error.message
+              : ERROR_MESSAGES.UNEXPECTED_ERROR}
           </Alert>
         )}
 

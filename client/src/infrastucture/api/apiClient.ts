@@ -1,48 +1,55 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import { AxiosInstance, AxiosRequestConfig } from 'axios';
 
-import { API_BASE_URL, DEFAULT_API_BASE_URL } from '@/infrastucture/constants';
-
-export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: API_BASE_URL || DEFAULT_API_BASE_URL,
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-axiosInstance.interceptors.response.use(
-  response => response,
-  error => {
-    console.error('API Error:', error.response?.data || error.message);
-    throw error.response?.data || error;
-  },
-);
+import { AXIOS_ERROR_MESSAGES } from '@/constants';
+import { createAxiosInstance } from '@/infrastucture/api/config/axiosConfig';
+import { ApiError } from '@/infrastucture/api/error/ApiError';
 
 class ApiService<T> {
   private endpoint: string;
+  private axiosInstance: AxiosInstance;
 
   constructor(endpoint: string) {
     this.endpoint = endpoint;
+    this.axiosInstance = createAxiosInstance();
   }
 
-  public getAllRepos = async <R = T>(
-    config?: AxiosRequestConfig,
-  ): Promise<R> => {
-    return axiosInstance.get<R>(this.endpoint, config).then(res => res.data);
-  };
+  private async handleRequest<R>(requestFn: () => Promise<R>): Promise<R> {
+    try {
+      return await requestFn();
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw new ApiError(500, AXIOS_ERROR_MESSAGES.DEFAULT_ERROR, error);
+    }
+  }
 
-  public postRepo = async <R = T>(
+  public async getAllRepos<R = T>(config?: AxiosRequestConfig): Promise<R> {
+    return this.handleRequest(async () => {
+      const response = await this.axiosInstance.get<R>(this.endpoint, config);
+      return response.data;
+    });
+  }
+
+  public async postRepo<R = T>(
     data: T,
     config?: AxiosRequestConfig,
-  ): Promise<R> => {
-    return axiosInstance
-      .post<R>(this.endpoint, data, config)
-      .then(res => res.data);
-  };
+  ): Promise<R> {
+    return this.handleRequest(async () => {
+      const response = await this.axiosInstance.post<R>(
+        this.endpoint,
+        data,
+        config,
+      );
+      return response.data;
+    });
+  }
 
-  public deleteRepo = async (config?: AxiosRequestConfig): Promise<void> => {
-    await axiosInstance.delete(this.endpoint, config);
-  };
+  public async deleteRepo(config?: AxiosRequestConfig): Promise<void> {
+    return this.handleRequest(async () => {
+      await this.axiosInstance.delete(this.endpoint, config);
+    });
+  }
 }
 
 export default ApiService;
