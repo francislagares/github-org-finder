@@ -24,8 +24,8 @@ export interface RowSelectionInfo {
 export interface TableProps {
   data: Repo[];
   columns: Column[];
-  onSelectRow: (repo: Repo) => void;
-  onDeleteRow: (repo: Repo) => void;
+  onSelectRow: (repo: Repo) => Promise<void>;
+  onDeleteRow: (repo: Repo) => Promise<void>;
 }
 
 export interface DeletedRows {

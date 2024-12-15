@@ -13,15 +13,15 @@ export const useTableSelection = (
   onSelectRow: (repo: Repo) => void,
 ) => {
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
-  const { handleRepoCheck, removeCheckedRepo } = useCheckedRepos();
+  const { handleRepoCheck } = useCheckedRepos();
   const { showSuccessMessage, showErrorMessage } = useToast();
 
   useEffect(() => {
-    const newSelectedRows = data
+    const initialSelectedRows = data
       .map((repo, index) => (repo.isChecked ? index : -1))
       .filter(index => index !== -1);
 
-    setSelectedRows(newSelectedRows);
+    setSelectedRows(initialSelectedRows);
   }, [data]);
 
   const handleRowSelection = useCallback(
@@ -36,51 +36,43 @@ export const useTableSelection = (
       const repo = data[lastAction.dataIndex];
       if (!repo) return;
 
-      if (rowsSelected.includes(lastAction.index)) {
-        try {
-          // Check if repo was previously selected
+      try {
+        if (rowsSelected.includes(lastAction.index)) {
+          // Select row
           if (!handleRepoCheck(repo)) {
-            // Revert selection if repo was previously selected
-            const revertedSelection = rowsSelected.filter(
-              index => index !== lastAction.index,
+            // Si ya estaba seleccionado, revertimos
+            setSelectedRows(prev =>
+              prev.filter(index => index !== lastAction.index),
             );
-            setSelectedRows(revertedSelection);
+
             return;
           }
-
           const updatedRepo = { ...repo, isChecked: true };
-          await onSelectRow(updatedRepo);
-          showSuccessMessage(TOAST_MESSAGES.REPO_SAVE_SUCCESS);
-        } catch (error) {
-          showErrorMessage(
-            error instanceof Error
-              ? error.message
-              : TOAST_MESSAGES.DEFAULT_ERROR,
-          );
-          removeCheckedRepo(repo.id);
-          const revertedSelection = rowsSelected.filter(
-            index => index !== lastAction.index,
-          );
-          setSelectedRows(revertedSelection);
-          return;
-        }
-      }
 
-      setSelectedRows(rowsSelected);
+          onSelectRow(updatedRepo);
+          showSuccessMessage(TOAST_MESSAGES.REPO_SAVE_SUCCESS);
+        } else {
+          // Deselect
+          const updatedRepo = { ...repo, isChecked: false };
+
+          onSelectRow(updatedRepo);
+          showSuccessMessage(TOAST_MESSAGES.REPO_DELETE_SUCCESS);
+        }
+
+        setSelectedRows(rowsSelected);
+      } catch (error) {
+        showErrorMessage(
+          error instanceof Error ? error.message : TOAST_MESSAGES.DEFAULT_ERROR,
+        );
+        setSelectedRows(prev =>
+          rowsSelected.includes(lastAction.index)
+            ? prev.filter(index => index !== lastAction.index) // Revert rows
+            : [...prev, lastAction.index],
+        );
+      }
     },
-    [
-      data,
-      onSelectRow,
-      handleRepoCheck,
-      removeCheckedRepo,
-      showSuccessMessage,
-      showErrorMessage,
-    ],
+    [data, handleRepoCheck, onSelectRow, showSuccessMessage, showErrorMessage],
   );
 
-  return {
-    selectedRows,
-    setSelectedRows,
-    handleRowSelection,
-  };
+  return { selectedRows, setSelectedRows, handleRowSelection };
 };

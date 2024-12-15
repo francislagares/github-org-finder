@@ -23,11 +23,11 @@ export const useCheckedRepos = () => {
 
   const handleRepoCheck = useCallback(
     (repo: Repo): boolean => {
-      if (isRepoChecked(repo.id)) {
+      if (repo.isChecked) {
         showInfoMessage(TOAST_MESSAGES.REPO_PREVIOUSLY_SELECTED);
+
         return false;
       }
-      addCheckedRepo(repo.id);
       return true;
     },
     [addCheckedRepo, isRepoChecked, showInfoMessage],

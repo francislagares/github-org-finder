@@ -30,17 +30,35 @@ const Home = () => {
     const allRepos = data?.pages.flat() || [];
     const { uniqueCheckedRepos, uniqueUncheckedRepos } =
       sortReposByCheckedStatus(allRepos);
+
     return [...uniqueCheckedRepos, ...uniqueUncheckedRepos];
   }, [data?.pages]);
 
   const mutationPost = useSaveRepo();
-  const handleSelectRepo = (selectedRepo: Repo) => {
-    mutationPost.mutate(selectedRepo);
+  const mutationDelete = useDeleteRepo();
+
+  const handleSelectRepo = async (selectedRepo: Repo) => {
+    const updatedPages = data?.pages.map(page =>
+      page.map(repo =>
+        repo.id === selectedRepo.id
+          ? { ...repo, isChecked: selectedRepo.isChecked }
+          : repo,
+      ),
+    );
+
+    if (data?.pages && updatedPages) {
+      data.pages = updatedPages;
+    }
+
+    if (selectedRepo.isChecked) {
+      await mutationPost.mutateAsync(selectedRepo);
+    } else {
+      await mutationDelete.mutateAsync(selectedRepo);
+    }
   };
 
-  const mutationDelete = useDeleteRepo();
-  const handleDeleteRow = (selectedRepo: Repo) => {
-    mutationDelete.mutate(selectedRepo);
+  const handleDeleteRow = async (selectedRepo: Repo) => {
+    await mutationDelete.mutateAsync(selectedRepo);
   };
 
   useEffect(() => {
