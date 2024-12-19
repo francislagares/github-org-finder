@@ -1,0 +1,224 @@
+{
+  "repos": [
+    {
+      "id": 11,
+      "name": "repo-11",
+      "url": "https://github.com/org/repo-11",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "jkl0121",
+            "url": "https://github.com/org/repo-11/commit/jkl0121"
+          },
+          "protected": false
+        }
+      ],
+      "language": "Kotlin",
+      "isChecked": true
+    },
+    {
+      "id": 12,
+      "name": "repo-12",
+      "url": "https://github.com/org/repo-12",
+      "branches": 2,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "mno3452",
+            "url": "https://github.com/org/repo-12/commit/mno3452"
+          },
+          "protected": false
+        },
+        {
+          "name": "develop",
+          "commit": {
+            "sha": "pqr6782",
+            "url": "https://github.com/org/repo-12/commit/pqr6782"
+          },
+          "protected": true
+        }
+      ],
+      "language": "Scala",
+      "isChecked": false
+    },
+    {
+      "id": 13,
+      "name": "repo-13",
+      "url": "https://github.com/org/repo-13",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "stu9013",
+            "url": "https://github.com/org/repo-13/commit/stu9013"
+          },
+          "protected": false
+        }
+      ],
+      "language": "Swift",
+      "isChecked": false
+    },
+    {
+      "id": 14,
+      "name": "repo-14",
+      "url": "https://github.com/org/repo-14",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "vwx2344",
+            "url": "https://github.com/org/repo-14/commit/vwx2344"
+          },
+          "protected": false
+        }
+      ],
+      "language": "Objective-C",
+      "isChecked": true
+    },
+    {
+      "id": 15,
+      "name": "repo-15",
+      "url": "https://github.com/org/repo-15",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "yz56785",
+            "url": "https://github.com/org/repo-15/commit/yz56785"
+          },
+          "protected": true
+        }
+      ],
+      "language": "C",
+      "isChecked": false
+    },
+    {
+      "id": 16,
+      "name": "repo-16",
+      "url": "https://github.com/org/repo-16",
+      "branches": 2,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "abc8906",
+            "url": "https://github.com/org/repo-16/commit/abc8906"
+          },
+          "protected": false
+        },
+        {
+          "name": "develop",
+          "commit": {
+            "sha": "def0127",
+            "url": "https://github.com/org/repo-16/commit/def0127"
+          },
+          "protected": true
+        }
+      ],
+      "language": "Perl",
+      "isChecked": false
+    },
+    {
+      "id": 17,
+      "name": "repo-17",
+      "url": "https://github.com/org/repo-17",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "ghi3458",
+            "url": "https://github.com/org/repo-17/commit/ghi3458"
+          },
+          "protected": true
+        }
+      ],
+      "language": "R",
+      "isChecked": false
+    },
+    {
+      "id": 18,
+      "name": "repo-18",
+      "url": "https://github.com/org/repo-18",
+      "branches": 3,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "jkl6789",
+            "url": "https://github.com/org/repo-18/commit/jkl6789"
+          },
+          "protected": false
+        },
+        {
+          "name": "feature",
+          "commit": {
+            "sha": "mno0129",
+            "url": "https://github.com/org/repo-18/commit/mno0129"
+          },
+          "protected": true
+        },
+        {
+          "name": "staging",
+          "commit": {
+            "sha": "pqr6789",
+            "url": "https://github.com/org/repo-18/commit/pqr6789"
+          },
+          "protected": false
+        }
+      ],
+      "language": "Shell",
+      "isChecked": true
+    },
+    {
+      "id": 19,
+      "name": "repo-19",
+      "url": "https://github.com/org/repo-19",
+      "branches": 2,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "stu9010",
+            "url": "https://github.com/org/repo-19/commit/stu9010"
+          },
+          "protected": false
+        },
+        {
+          "name": "hotfix",
+          "commit": {
+            "sha": "vwx2340",
+            "url": "https://github.com/org/repo-19/commit/vwx2340"
+          },
+          "protected": true
+        }
+      ],
+      "language": "Dart",
+      "isChecked": false
+    },
+    {
+      "id": 20,
+      "name": "repo-20",
+      "url": "https://github.com/org/repo-20",
+      "branches": 1,
+      "branchesList": [
+        {
+          "name": "main",
+          "commit": {
+            "sha": "yz56780",
+            "url": "https://github.com/org/repo-20/commit/yz56780"
+          },
+          "protected": false
+        }
+      ],
+      "language": "Elixir",
+      "isChecked": false
+    }
+  ]
+}
