@@ -1,14 +1,36 @@
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 
 import { defaultTableOptions } from './config/tableOptions';
 import ExpandableRow from './ExpandableRow';
+import { useTableFiltering } from './hooks/useTableFiltering';
 import { useTableState } from './hooks/useTableState';
 import { DataTableOptions, TableProps } from './types';
 
-const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
-  const { selectedRows, isUpdating, updateSelection, handleDelete } =
-    useTableState(data, onSelectRow, onDeleteRow);
+const DataTable = ({
+  data,
+  columns,
+  onSelectRow,
+  onDeleteRow,
+  searchTerm = '', // Add searchTerm prop
+}: TableProps) => {
+  const {
+    selectedRows,
+    isUpdating,
+    deletingRows,
+    updateSelection,
+    handleDelete,
+    tableRef,
+  } = useTableState(data, onSelectRow, onDeleteRow);
+
+  const { filterTable } = useTableFiltering(data);
+
+  // Filter table when searchTerm changes
+  useEffect(() => {
+    if (searchTerm) {
+      filterTable(searchTerm, tableRef);
+    }
+  }, [searchTerm, filterTable, tableRef]);
 
   const handleRowSelection = async (
     currentRowsSelected: { index: number; dataIndex: number }[],
@@ -37,7 +59,13 @@ const DataTable = ({ data, columns, onSelectRow, onDeleteRow }: TableProps) => {
       const branchesList = data[rowMeta.rowIndex]?.branchesList;
       return <ExpandableRow branchesList={branchesList || []} />;
     },
-    isRowSelectable: () => !isUpdating,
+    isRowSelectable: rowIndex => {
+      const repo = data[rowIndex];
+      return !isUpdating && !deletingRows.has(repo.id);
+    },
+    setTableProps: () => ({
+      ref: tableRef,
+    }),
   };
 
   return (

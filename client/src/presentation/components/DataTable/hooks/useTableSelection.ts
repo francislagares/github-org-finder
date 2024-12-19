@@ -1,6 +1,7 @@
 import { Repo } from '@/domain/entities/repo';
 import { useCallback, useEffect, useState } from 'react';
 
+import { ERROR_MESSAGES } from '@/constants';
 import { useToast } from '@/presentation/hooks/useToast';
 
 import { TOAST_MESSAGES } from '../constants/toastMessages';
@@ -62,7 +63,9 @@ export const useTableSelection = (
         setSelectedRows(rowsSelected);
       } catch (error) {
         showErrorMessage(
-          error instanceof Error ? error.message : TOAST_MESSAGES.DEFAULT_ERROR,
+          error instanceof Error
+            ? ERROR_MESSAGES.SAVE_ERROR
+            : TOAST_MESSAGES.DEFAULT_ERROR,
         );
         setSelectedRows(prev =>
           rowsSelected.includes(lastAction.index)

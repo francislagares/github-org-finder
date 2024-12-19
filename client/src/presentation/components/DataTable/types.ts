@@ -3,6 +3,14 @@ import { MUIDataTableOptions } from 'mui-datatables';
 
 import { Column } from './columns';
 
+export interface TableProps {
+  data: Repo[];
+  columns: Column[];
+  onSelectRow: (repo: Repo) => Promise<void>;
+  onDeleteRow: (repo: Repo) => Promise<void>;
+  searchTerm?: string; // Add optional searchTerm prop
+}
+
 export type DataTableOptions = Omit<
   MUIDataTableOptions,
   'onRowSelectionChange'
@@ -19,13 +27,6 @@ export type DataTableOptions = Omit<
 export interface RowSelectionInfo {
   index: number;
   dataIndex: number;
-}
-
-export interface TableProps {
-  data: Repo[];
-  columns: Column[];
-  onSelectRow: (repo: Repo) => Promise<void>;
-  onDeleteRow: (repo: Repo) => Promise<void>;
 }
 
 export interface DeletedRows {
