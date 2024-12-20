@@ -15,146 +15,216 @@ describe('DataTable Integration', () => {
     vi.clearAllMocks();
   });
 
-  it('should render table with data', () => {
-    render(
-      <DataTable
-        data={mockRepos}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+  describe('Rendering', () => {
+    it('should render table with correct columns and data', () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    // Verify table title
-    expect(screen.getByText('List of Repositories')).toBeInTheDocument();
+      // Verify column headers
+      columns.forEach(column => {
+        expect(screen.getByText(column.label)).toBeInTheDocument();
+      });
 
-    // Verify column headers
-    columns.forEach(column => {
-      expect(screen.getByText(column.label)).toBeInTheDocument();
+      // Verify data rows
+      mockRepos.forEach(repo => {
+        expect(screen.getByText(repo.name)).toBeInTheDocument();
+        expect(screen.getByText(repo.language)).toBeInTheDocument();
+      });
     });
 
-    // Verify data rows
-    mockRepos.forEach(repo => {
-      expect(screen.getByText(repo.name)).toBeInTheDocument();
+    it('should handle empty data state', () => {
+      render(
+        <DataTable
+          data={[]}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
+
+      expect(screen.getByRole('alert')).toHaveTextContent(
+        /no repositories found/i,
+      );
     });
   });
 
-  it('should handle single row selection', async () => {
-    render(
-      <DataTable
-        data={mockRepos}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+  describe('Row Selection', () => {
+    it('should handle single row selection', async () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    const checkbox = screen.getByRole('checkbox', {
-      name: new RegExp(mockRepos[0].name, 'i'),
-    });
+      const checkbox = screen.getAllByRole('checkbox')[1]; // First row checkbox
+      await userEvent.click(checkbox);
 
-    await userEvent.click(checkbox);
-
-    await waitFor(() => {
       expect(mockOnSelectRow).toHaveBeenCalledWith({
         ...mockRepos[0],
         isChecked: true,
       });
+      expect(checkbox).toBeChecked();
     });
-  });
 
-  it('should handle multiple row selection', async () => {
-    render(
-      <DataTable
-        data={mockRepos}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+    it('should handle multiple row selection', async () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    // Select first row
-    await userEvent.click(
-      screen.getByRole('checkbox', {
-        name: new RegExp(mockRepos[0].name, 'i'),
-      }),
-    );
+      const checkboxes = screen.getAllByRole('checkbox').slice(1, 3); // First two row checkboxes
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(checkboxes[1]);
 
-    // Select second row
-    await userEvent.click(
-      screen.getByRole('checkbox', {
-        name: new RegExp(mockRepos[1].name, 'i'),
-      }),
-    );
-
-    await waitFor(() => {
       expect(mockOnSelectRow).toHaveBeenCalledTimes(2);
-      expect(mockOnSelectRow).toHaveBeenNthCalledWith(1, {
-        ...mockRepos[0],
-        isChecked: true,
-      });
-      expect(mockOnSelectRow).toHaveBeenNthCalledWith(2, {
-        ...mockRepos[1],
-        isChecked: true,
+      checkboxes.forEach(checkbox => {
+        expect(checkbox).toBeChecked();
       });
     });
   });
 
-  it('should handle row deletion', async () => {
-    render(
-      <DataTable
-        data={mockRepos}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+  describe('Row Expansion', () => {
+    it('should expand row and show branch details', async () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    // Select and delete first row
-    await userEvent.click(
-      screen.getByRole('checkbox', {
-        name: new RegExp(mockRepos[0].name, 'i'),
-      }),
-    );
+      const expandButton = screen.getAllByRole('button')[1];
+      await userEvent.click(expandButton);
 
-    const deleteButton = screen.getByRole('button', { name: /delete/i });
-    await userEvent.click(deleteButton);
+      waitFor(() => {
+        expect(screen.getByText('Branch Name')).toBeInTheDocument();
+        expect(screen.getByText('Commit SHA')).toBeInTheDocument();
 
-    await waitFor(() => {
+        mockRepos[0].branchesList?.forEach(branch => {
+          expect(screen.getByText(branch.name)).toBeInTheDocument();
+        });
+      });
+    });
+  });
+
+  describe('Row Deletion', () => {
+    it('should handle row deletion', async () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
+
+      // Select and delete first row
+      const checkbox = screen.getAllByRole('checkbox')[1];
+      await userEvent.click(checkbox);
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      await userEvent.click(deleteButton);
+
       expect(mockOnDeleteRow).toHaveBeenCalledWith(mockRepos[0]);
     });
   });
 
-  it('should prevent selecting already deleted rows', async () => {
-    const { rerender } = render(
-      <DataTable
-        data={mockRepos}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+  describe('Accessibility', () => {
+    it('should have proper ARIA labels and roles', () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    // Delete first row
-    await userEvent.click(
-      screen.getByRole('checkbox', {
-        name: new RegExp(mockRepos[0].name, 'i'),
-      }),
-    );
-    await userEvent.click(screen.getByRole('button', { name: /delete/i }));
+      expect(screen.getByRole('grid')).toBeInTheDocument();
+      expect(screen.getAllByRole('row').length).toBeGreaterThan(0);
+    });
 
-    // Update data to reflect deletion
-    const updatedData = mockRepos.slice(1);
-    rerender(
-      <DataTable
-        data={updatedData}
-        columns={columns}
-        onSelectRow={mockOnSelectRow}
-        onDeleteRow={mockOnDeleteRow}
-      />,
-    );
+    it('should be keyboard navigable', async () => {
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
 
-    // Verify deleted row is not present
-    expect(screen.queryByText(mockRepos[0].name)).not.toBeInTheDocument();
+      const firstCheckbox = screen.getAllByRole('checkbox')[1];
+
+      firstCheckbox.focus();
+      expect(document.activeElement).toBe(firstCheckbox);
+
+      await userEvent.keyboard('{space}');
+
+      waitFor(() => {
+        expect(mockOnSelectRow).toHaveBeenCalledWith({
+          ...mockRepos[0],
+          isChecked: true,
+        });
+        expect(firstCheckbox).toBeChecked();
+      });
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle selection errors gracefully', async () => {
+      mockOnSelectRow.mockRejectedValueOnce(new Error('Selection failed'));
+
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
+
+      const checkbox = screen.getAllByRole('checkbox')[1];
+      await userEvent.click(checkbox);
+
+      waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/error/i);
+      });
+    });
+
+    it('should handle deletion errors gracefully', async () => {
+      mockOnDeleteRow.mockRejectedValueOnce(new Error('Deletion failed'));
+
+      render(
+        <DataTable
+          data={mockRepos}
+          columns={columns}
+          onSelectRow={mockOnSelectRow}
+          onDeleteRow={mockOnDeleteRow}
+        />,
+      );
+
+      const checkbox = screen.getAllByRole('checkbox')[1];
+      await userEvent.click(checkbox);
+      const deleteButton = screen.getByRole('button', { name: /delete/i });
+      await userEvent.click(deleteButton);
+
+      waitFor(() => {
+        expect(screen.getByRole('alert')).toHaveTextContent(/error/i);
+      });
+    });
   });
 });

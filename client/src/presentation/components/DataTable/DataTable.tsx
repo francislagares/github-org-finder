@@ -68,6 +68,14 @@ const DataTable = ({
     }),
   };
 
+  if (!data.length) {
+    return (
+      <div role="alert" className="text-center p-4">
+        No repositories found
+      </div>
+    );
+  }
+
   return (
     <MUIDataTable
       title="List of Repositories"
