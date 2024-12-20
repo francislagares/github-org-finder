@@ -1,10 +1,11 @@
 import MUIDataTable, { MUIDataTableOptions } from 'mui-datatables';
 import { memo, useEffect } from 'react';
 
+import { useTableFiltering } from '@/presentation/components/DataTable/hooks/useTableFiltering';
+import { useTableState } from '@/presentation/components/DataTable/hooks/useTableState';
+
 import { defaultTableOptions } from './config/tableOptions';
 import ExpandableRow from './ExpandableRow';
-import { useTableFiltering } from './hooks/useTableFiltering';
-import { useTableState } from './hooks/useTableState';
 import { DataTableOptions, TableProps } from './types';
 
 const DataTable = ({
@@ -27,7 +28,7 @@ const DataTable = ({
 
   // Filter table when searchTerm changes
   useEffect(() => {
-    if (searchTerm) {
+    if (searchTerm && tableRef.current) {
       filterTable(searchTerm, tableRef);
     }
   }, [searchTerm, filterTable, tableRef]);

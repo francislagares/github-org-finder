@@ -127,67 +127,75 @@ export const useTableState = (
   );
 
   const handleDelete = useCallback(
-    async (rowsDeleted: {
+    (rowsDeleted: {
       lookup: { [dataIndex: number]: boolean };
       data: { index: number; dataIndex: number }[];
     }) => {
       if (state.isUpdating) return false;
 
       const previousState = { ...state };
-      try {
-        setState(prev => ({
-          ...prev,
-          isUpdating: true,
-        }));
 
-        // Mark rows as being deleted
-        const deletingIds = new Set<number>();
-        for (const { dataIndex } of rowsDeleted.data) {
-          const repoToDelete = data[dataIndex];
-          if (repoToDelete) {
-            deletingIds.add(repoToDelete.id);
-          }
-        }
+      // Handle deletions asynchronously without returning the promise
+      (async () => {
+        try {
+          setState(prev => ({
+            ...prev,
+            isUpdating: true,
+          }));
 
-        setState(prev => ({
-          ...prev,
-          deletingRows: deletingIds,
-        }));
-
-        // Process deletions sequentially
-        for (const { dataIndex } of rowsDeleted.data) {
-          const repoToDelete = data[dataIndex];
-          if (repoToDelete) {
-            try {
-              await onDeleteRow(repoToDelete);
-              removeTableRow(dataIndex);
-              setState(prev => ({
-                ...prev,
-                checkedRepos: new Set(
-                  [...prev.checkedRepos].filter(id => id !== repoToDelete.id),
-                ),
-              }));
-              showSuccessMessage(TOAST_MESSAGES.REPO_DELETE_SUCCESS);
-            } catch (error) {
-              console.error(`Failed to delete repo ${repoToDelete.id}:`, error);
-              throw error;
+          // Mark rows as being deleted
+          const deletingIds = new Set<number>();
+          for (const { dataIndex } of rowsDeleted.data) {
+            const repoToDelete = data[dataIndex];
+            if (repoToDelete) {
+              deletingIds.add(repoToDelete.id);
             }
           }
-        }
 
-        setState(prev => ({
-          ...prev,
-          selectedRows: [],
-          deletingRows: new Set(),
-        }));
-      } catch (error) {
-        handleError(error, () => setState(previousState));
-      } finally {
-        setState(prev => ({
-          ...prev,
-          isUpdating: false,
-        }));
-      }
+          setState(prev => ({
+            ...prev,
+            deletingRows: deletingIds,
+          }));
+
+          // Process deletions sequentially
+          for (const { dataIndex } of rowsDeleted.data) {
+            const repoToDelete = data[dataIndex];
+            if (repoToDelete) {
+              try {
+                await onDeleteRow(repoToDelete);
+                removeTableRow(dataIndex);
+                setState(prev => ({
+                  ...prev,
+                  checkedRepos: new Set(
+                    [...prev.checkedRepos].filter(id => id !== repoToDelete.id),
+                  ),
+                }));
+                showSuccessMessage(TOAST_MESSAGES.REPO_DELETE_SUCCESS);
+              } catch (error) {
+                console.error(
+                  `Failed to delete repo ${repoToDelete.id}:`,
+                  error,
+                );
+                throw error;
+              }
+            }
+          }
+
+          setState(prev => ({
+            ...prev,
+            selectedRows: [],
+            deletingRows: new Set(),
+          }));
+        } catch (error) {
+          handleError(error, () => setState(previousState));
+        } finally {
+          setState(prev => ({
+            ...prev,
+            isUpdating: false,
+          }));
+        }
+      })();
+
       return false; // Prevent default deletion behavior
     },
     [state, data, onDeleteRow, showSuccessMessage, handleError, removeTableRow],
