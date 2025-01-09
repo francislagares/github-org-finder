@@ -6,7 +6,6 @@ import {
   FetchReposUseCase,
   Repo,
   RepoDto,
-  RepoRepository,
   SaveRepoUseCase,
 } from '@/domain';
 import { Branch } from '@/domain/types/branches';

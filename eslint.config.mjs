@@ -49,9 +49,9 @@ export default [
   },
   {
     ignores: [
-      'dist/**',
-      'build/**',
-      'coverage/**',
+      '**/dist/',
+      '**/build/',
+      '**/coverage/',
       '**/node_modules/',
       'node_modules/',
       '*.config.{js,ts,mjs}',
